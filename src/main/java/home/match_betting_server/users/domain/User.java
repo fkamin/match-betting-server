@@ -1,6 +1,8 @@
 package home.match_betting_server.users.domain;
 
+import home.match_betting_server.management.dto.responses.NewAccountResponse;
 import home.match_betting_server.management.dto.responses.UserGeneralResponse;
+import home.match_betting_server.users.dto.responses.UserDetailedResponse;
 import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -49,10 +51,18 @@ public class User {
     }
 
     public UserSimplifiedResponse toSimplifiedResponse() {
-        return new UserSimplifiedResponse(login, password);
+        return new UserSimplifiedResponse(id, login, password);
     }
 
     public UserGeneralResponse toGeneralResponse() {
-        return new UserGeneralResponse(login, name);
+        return new UserGeneralResponse(id, login, name);
+    }
+
+    public NewAccountResponse toNewAccountResponse() {
+        return new NewAccountResponse(login, password);
+    }
+
+    public UserDetailedResponse toDetailedResponse() {
+        return new UserDetailedResponse(id, login, name, points, betsWithMaxScore, percentageOfCorrectGuesses, rankingPosition);
     }
 }

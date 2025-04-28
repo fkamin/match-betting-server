@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class UserSimplifiedResponse {
+    public Long id;
     public String login;
     public String password;
 }
