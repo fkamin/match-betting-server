@@ -1,5 +1,7 @@
 package home.match_betting_server.users.domain;
 
+import home.match_betting_server.management.dto.responses.UserGeneralResponse;
+import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,4 +42,17 @@ public class User {
     private Integer percentageOfCorrectGuesses = 0;
 
     private Integer rankingPosition = 0;
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    public UserSimplifiedResponse toSimplifiedResponse() {
+        return new UserSimplifiedResponse(login, password);
+    }
+
+    public UserGeneralResponse toGeneralResponse() {
+        return new UserGeneralResponse(login, name);
+    }
 }
