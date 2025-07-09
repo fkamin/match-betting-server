@@ -8,7 +8,13 @@ public enum ServiceErrorResponseCode {
     USER02("User does not exists exception"),
     USER03("New password must be different then current"),
     USER04("New password and new password again must be the same"),
-    USER05("User with that name already exists exception");
+    USER05("User with that name already exists exception"),
+
+    GROUP01("Group with that name already exists exception"),
+    GROUP02("Group does not exists exception"),
+
+    TEAM01("Team with that name already exists exception"),
+    TEAM02("Team does not exists exception");
 
     private final String message;
 

@@ -30,17 +30,18 @@ public class UserFacade {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 
-    public UserDetailedResponse changeUserName(Long userId, NewUserNameRequest newUserNameRequest) {
+    public UserDetailedResponse changeName(Long userId, NewUserNameRequest newUserNameRequest) {
         User userToModify = findUserById(userId);
 
         //TODO dodać walidacje
-        if (userRepository.existsByName(newUserNameRequest.name) && newUserNameRequest.name != null) throw new UserWithThatNameAlreadyExistsException();
+        if (userRepository.existsByName(newUserNameRequest.name) && newUserNameRequest.name != null)
+            throw new UserWithThatNameAlreadyExistsException();
         userToModify.setName(newUserNameRequest.name);
 
         return userRepository.save(userToModify).toDetailedResponse();
     }
 
-    public UserDetailedResponse changeUserPassword(Long userId, NewPasswordRequest newPasswordRequest) {
+    public UserDetailedResponse changePassword(Long userId, NewPasswordRequest newPasswordRequest) {
         User userToModify = findUserById(userId);
 
         if (passwordService.validateNewPassword(newPasswordRequest, userToModify.getPassword())) {

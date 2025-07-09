@@ -28,12 +28,12 @@ public class UserCrudController {
     }
 
     @PutMapping("/{userId}/change-name")
-    public UserDetailedResponse changeUserName(@PathVariable Long userId, @RequestBody NewUserNameRequest newUserNameRequest) {
-        return userFacade.changeUserName(userId, newUserNameRequest);
+    public UserDetailedResponse changeName(@PathVariable Long userId, @RequestBody NewUserNameRequest newUserNameRequest) {
+        return userFacade.changeName(userId, newUserNameRequest);
     }
 
     @PutMapping("/{userId}/change-password")
-    public UserDetailedResponse changeUserName(@PathVariable Long userId, @RequestBody NewPasswordRequest newPasswordRequest) {
-        return userFacade.changeUserPassword(userId, newPasswordRequest);
+    public UserDetailedResponse changePassword(@PathVariable Long userId, @RequestBody NewPasswordRequest newPasswordRequest) {
+        return userFacade.changePassword(userId, newPasswordRequest);
     }
 }
