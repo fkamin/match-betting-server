@@ -3,6 +3,7 @@ package home.match_betting_server.management.domain;
 import home.match_betting_server.auth.domain.PasswordGenerator;
 import home.match_betting_server.auth.domain.PasswordService;
 import home.match_betting_server.management.dto.requests.CreateUserRequest;
+import home.match_betting_server.users.domain.Role;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
 import home.match_betting_server.users.dto.exceptions.UserAlreadyExistsException;
@@ -23,11 +24,12 @@ public class AdminFacade {
     }
 
     public UserNewAccountResponse generateNewAccount(CreateUserRequest createUserRequest) {
-        if (userRepository.existsByLogin(createUserRequest.login)) throw new UserAlreadyExistsException();
+        if (userRepository.existsByLogin(createUserRequest.getLogin())) throw new UserAlreadyExistsException();
 
         String generatedPassword = PasswordGenerator.generateRandomPassword();
-        User originalUser = new User(createUserRequest.login, generatedPassword);
-        User userForDatabase = new User(createUserRequest.login, passwordService.hashPassword(generatedPassword));
+
+        User originalUser = new User(createUserRequest.getLogin(), generatedPassword);
+        User userForDatabase = new User(createUserRequest.getLogin(), passwordService.hashPassword(generatedPassword), Role.USER);
 
         userRepository.save(userForDatabase);
 

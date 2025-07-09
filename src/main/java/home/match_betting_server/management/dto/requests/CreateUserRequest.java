@@ -1,5 +1,10 @@
 package home.match_betting_server.management.dto.requests;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CreateUserRequest {
-    public String login;
+    private String login;
 }

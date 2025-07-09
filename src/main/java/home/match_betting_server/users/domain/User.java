@@ -26,8 +26,7 @@ public class User {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     private int points = 0;
@@ -40,8 +39,14 @@ public class User {
         this.password = password;
     }
 
+    public User(String login, String password, Role role) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
+    }
+
     public UserSimplifiedResponse toSimplifiedResponse() {
-        return new UserSimplifiedResponse(id, name, role.getName(), points);
+        return new UserSimplifiedResponse(id, name, role, points);
     }
 
     public UserDetailedResponse toDetailedResponse() {
