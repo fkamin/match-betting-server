@@ -5,19 +5,19 @@ services:
     image: postgres:latest
     container_name: database
     environment:
-      - POSTGRES_USER=user                      # użytkownik
-      - POSTGRES_PASSWORD=password              # hasło
-      - POSTGRES_DB=match-betting-database      # nazwa bazy danych
+      - POSTGRES_USER=user                      # user
+      - POSTGRES_PASSWORD=password              # password
+      - POSTGRES_DB=match-betting-database      # database name
     volumes:
-      - postgres-data:/var/lib/postgresql/data  # przechowywanie danych bazy
+      - postgres-data:/var/lib/postgresql/data  # database storage
     networks:
       - app-network
     ports:
-      - "5432:5432"                             # port do komunikacji z bazą
+      - "5432:5432"                             # port for communication
 
 networks:
   app-network:
-    driver: bridge                              # połączenie kontenerów w tej samej sieci
+    driver: bridge                              # connecting containers in the same network
 
 volumes:
   postgres-data:

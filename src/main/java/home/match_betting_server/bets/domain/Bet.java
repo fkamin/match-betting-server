@@ -1,6 +1,7 @@
 package home.match_betting_server.bets.domain;
 
 import home.match_betting_server.matches.domain.Match;
+import home.match_betting_server.teams.domain.Team;
 import home.match_betting_server.users.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,6 +30,10 @@ public class Bet {
 
     @Column(nullable = false)
     private Integer betRightScore;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team betWinnerTeam;
 
     private Integer pointsForBet = 0;
 }

@@ -32,11 +32,11 @@ public class AdminFacade {
 
         userRepository.save(userForDatabase);
 
-        return originalUser.toNewAccountResponse();
+//        return originalUser.toNewAccountResponse();
     }
 
     public List<UserGeneralResponse> getAllUsers() {
-        return userRepository.findAll().stream().map(User::toGeneralResponse).toList();
+//        return userRepository.findAll().stream().map(User::toGeneralResponse).toList();
     }
 
     public ResponseEntity<String> deleteUserById(Long userId) {

@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class UserDetailedResponse {
-    public Long id;
-    public String login;
-    public String name;
-    public Integer points;
-    public Integer betsWithMaxScore;
-    public Integer percentageOfCorrectGuesses;
-    public Integer rankingPosition;
+    private Long id;
+    private String name;
+    private int points;
+    private int betsWithMaxScore;
+    private double percentageOfCorrectGuesses;
+    private int rankingPosition;
 }

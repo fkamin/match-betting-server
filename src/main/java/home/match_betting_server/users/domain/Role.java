@@ -4,25 +4,21 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
-import java.util.HashSet;
-import java.util.Set;
 
-@Entity
-@Table(name = "roles")
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@Table(name = "roles")
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
-
+    private String name; // "USER" OR "ADMIN"
     private String description;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
-
+    @OneToMany(mappedBy = "role")
+    private List<User> users;
 }
