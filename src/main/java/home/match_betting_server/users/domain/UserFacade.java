@@ -2,12 +2,12 @@ package home.match_betting_server.users.domain;
 
 import home.match_betting_server.auth.domain.PasswordService;
 import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
+import home.match_betting_server.users.dto.exceptions.UserWithThatNameAlreadyExistsException;
 import home.match_betting_server.users.dto.requests.NewPasswordRequest;
 import home.match_betting_server.users.dto.requests.NewUserNameRequest;
 import home.match_betting_server.users.dto.responses.UserDetailedResponse;
 
 import java.util.List;
-import java.util.Objects;
 
 public class UserFacade {
     private final UserRepository userRepository;
@@ -34,6 +34,7 @@ public class UserFacade {
         User userToModify = findUserById(userId);
 
         //TODO dodać walidacje
+        if (userRepository.existsByName(newUserNameRequest.name) && newUserNameRequest.name != null) throw new UserWithThatNameAlreadyExistsException();
         userToModify.setName(newUserNameRequest.name);
 
         return userRepository.save(userToModify).toDetailedResponse();
