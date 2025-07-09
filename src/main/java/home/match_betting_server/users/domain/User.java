@@ -48,8 +48,8 @@ public class User {
         return new UserDetailedResponse(id, name, points, betsWithMaxScore, percentageOfCorrectGuesses, rankingPosition);
     }
 
-    public UserNewAccountResponse toNewAccountResponse() {
-        return new UserNewAccountResponse(id, name, login, password);
+    public UserNewAccountResponse toNewAccountResponse(Long userId) {
+        return new UserNewAccountResponse(userId, name, login, password);
     }
 
 }
