@@ -1,5 +1,6 @@
 package home.match_betting_server.users.dto.responses;
 
+import home.match_betting_server.users.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,9 +8,7 @@ import lombok.Getter;
 @Getter
 public class UserDetailedResponse {
     private Long id;
+    private String login;
     private String name;
-    private int points;
-    private int betsWithMaxScore;
-    private double percentageOfCorrectGuesses;
-    private int rankingPosition;
+    private Role role;
 }

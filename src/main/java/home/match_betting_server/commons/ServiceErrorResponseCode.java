@@ -14,7 +14,9 @@ public enum ServiceErrorResponseCode {
     GROUP02("Group does not exists exception"),
 
     TEAM01("Team with that name already exists exception"),
-    TEAM02("Team does not exists exception");
+    TEAM02("Team does not exists exception"),
+
+    PHASE01("Phase with that name already exists exception");
 
     private final String message;
 

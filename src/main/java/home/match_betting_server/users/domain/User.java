@@ -1,5 +1,6 @@
 package home.match_betting_server.users.domain;
 
+import home.match_betting_server.phases.domain.UserPhaseStats;
 import home.match_betting_server.users.dto.responses.UserDetailedResponse;
 import home.match_betting_server.users.dto.responses.UserNewAccountResponse;
 import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
@@ -7,6 +8,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -29,10 +33,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private int points = 0;
-    private int betsWithMaxScore = 0;
-    private double percentageOfCorrectGuesses = 0;
-    private int rankingPosition = 0;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserPhaseStats> userPhaseStats = new ArrayList<>();
 
     public User(String login, String password) {
         this.login = login;
@@ -46,11 +48,11 @@ public class User {
     }
 
     public UserSimplifiedResponse toSimplifiedResponse() {
-        return new UserSimplifiedResponse(id, name, role, points);
+        return new UserSimplifiedResponse(id, name);
     }
 
     public UserDetailedResponse toDetailedResponse() {
-        return new UserDetailedResponse(id, name, points, betsWithMaxScore, percentageOfCorrectGuesses, rankingPosition);
+        return new UserDetailedResponse(id, login, name, role);
     }
 
     public UserNewAccountResponse toNewAccountResponse(Long userId) {
