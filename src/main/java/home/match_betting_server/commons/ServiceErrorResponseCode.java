@@ -21,7 +21,9 @@ public enum ServiceErrorResponseCode {
     PHASE03("User already joined that phase exception"),
     PHASE04("Not allowed operation exception"),
     PHASE05("User does not joined that phase exception"),
-    PHASE06("Invalid phase status exception"),;
+    PHASE06("Invalid phase status exception"),
+
+    MATCH01("Match does not exist exception"),;
 
     private final String message;
 
