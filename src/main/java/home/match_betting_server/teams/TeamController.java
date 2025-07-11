@@ -8,6 +8,7 @@ import home.match_betting_server.teams.dto.requests.UpdateTeamRequest;
 import home.match_betting_server.teams.dto.responses.GroupDetailedResponse;
 import home.match_betting_server.teams.dto.responses.GroupSimplifiedResponse;
 import home.match_betting_server.teams.dto.responses.TeamDetailedResponse;
+import home.match_betting_server.teams.dto.responses.TeamSimplifiedResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,7 @@ public class TeamController {
     }
 
     @GetMapping("/{groupId}/teams")
-    public List<TeamDetailedResponse> getAllTeams(@PathVariable Long groupId) {
+    public List<TeamSimplifiedResponse> getAllTeams(@PathVariable Long groupId) {
         return teamFacade.getAllTeams(groupId);
     }
 

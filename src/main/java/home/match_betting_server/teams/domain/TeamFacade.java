@@ -11,6 +11,7 @@ import home.match_betting_server.teams.dto.requests.UpdateTeamRequest;
 import home.match_betting_server.teams.dto.responses.GroupDetailedResponse;
 import home.match_betting_server.teams.dto.responses.GroupSimplifiedResponse;
 import home.match_betting_server.teams.dto.responses.TeamDetailedResponse;
+import home.match_betting_server.teams.dto.responses.TeamSimplifiedResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -54,15 +55,19 @@ public class TeamFacade {
     public TeamDetailedResponse createTeam(CreateTeamRequest createTeamRequest, Long groupId) {
         if (teamRepository.existsByName(createTeamRequest.getName()) && createTeamRequest.getName() != null)
             throw new TeamWithThatNameAlreadyExistsException();
-        Group group = findGroupById(groupId);
 
-        return teamRepository.save(new Team(createTeamRequest.getName(), group)).toDetailedResponse(groupId);
+        Group group = findGroupById(groupId);
+        Team newTeam = new Team(createTeamRequest.getName(), group);
+
+        group.getTeams().add(newTeam);
+
+        return teamRepository.save(newTeam).toDetailedResponse(groupId);
     }
 
-    public List<TeamDetailedResponse> getAllTeams(Long groupId) {
+    public List<TeamSimplifiedResponse> getAllTeams(Long groupId) {
         Group group = findGroupById(groupId);
 
-        return group.getTeams().stream().map(team -> team.toDetailedResponse(groupId)).toList();
+        return group.getTeams().stream().map(Team::toSimplifiedResponse).toList();
     }
 
     public TeamDetailedResponse getTeam(Long groupId, Long teamId) {

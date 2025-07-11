@@ -2,6 +2,7 @@ package home.match_betting_server.teams.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import home.match_betting_server.teams.dto.responses.TeamDetailedResponse;
+import home.match_betting_server.teams.dto.responses.TeamSimplifiedResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,9 @@ public class Team {
 
     public TeamDetailedResponse toDetailedResponse(Long groupId) {
         return new TeamDetailedResponse(id, name, groupId);
+    }
+
+    public TeamSimplifiedResponse toSimplifiedResponse() {
+        return new TeamSimplifiedResponse(id, name);
     }
 }
