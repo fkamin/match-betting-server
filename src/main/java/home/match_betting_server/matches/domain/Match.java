@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import home.match_betting_server.matches.dto.responses.MatchDetailedResponse;
 import home.match_betting_server.matches.dto.responses.MatchSimplifiedResponse;
 import home.match_betting_server.phases.domain.Phase;
-import home.match_betting_server.phases.domain.PhaseType;
 import home.match_betting_server.teams.domain.Team;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -58,6 +57,10 @@ public class Match {
         return new MatchDetailedResponse(id, phase.getId(), teamLeft.getName(), teamRight.getName(), teamLeftScore, teamRightScore, matchWinner.getName(), matchDate, matchStatus);
     }
 
+    public void finishMatch() {
+        this.matchStatus = MatchStatus.FINISHED;
+    }
+
     // --- Pomocnicze metody biznesowe ---
 
 //    public boolean isGroupStage() {
@@ -75,4 +78,7 @@ public class Match {
 //    public boolean hasWinnerDeclared() {
 //        return matchWinner != null;
 //    }
+    public boolean isMatchFinished() {
+        return matchStatus == MatchStatus.FINISHED;
+    }
 }
