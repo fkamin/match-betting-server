@@ -1,8 +1,8 @@
-package home.match_betting_server.management.domain;
+package home.match_betting_server.admin.domain;
 
 import home.match_betting_server.auth.domain.PasswordGenerator;
 import home.match_betting_server.auth.domain.PasswordService;
-import home.match_betting_server.management.dto.requests.CreateUserRequest;
+import home.match_betting_server.admin.dto.requests.CreateUserRequest;
 import home.match_betting_server.users.domain.Role;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
@@ -10,6 +10,7 @@ import home.match_betting_server.users.dto.exceptions.UserAlreadyExistsException
 import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
 import home.match_betting_server.users.dto.responses.UserDetailedResponse;
 import home.match_betting_server.users.dto.responses.UserNewAccountResponse;
+import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -36,14 +37,22 @@ public class AdminFacade {
         return originalUser.toNewAccountResponse(userForDatabase.getId());
     }
 
-    public List<UserDetailedResponse> getAllUsers() {
-        return userRepository.findAll().stream().map(User::toDetailedResponse).toList();
+    public UserDetailedResponse getUserDetailed(Long userId) {
+        return findUserById(userId).toDetailedResponse();
+    }
+
+    public List<UserSimplifiedResponse> getAllUsers() {
+        return userRepository.findAll().stream().map(User::toSimplifiedResponse).toList();
     }
 
     public ResponseEntity<String> deleteUserById(Long userId) {
-        User userToDelete = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User userToDelete = findUserById(userId);
         userRepository.delete(userToDelete);
 
         return ResponseEntity.ok().build();
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 }

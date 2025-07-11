@@ -1,4 +1,4 @@
-package home.match_betting_server.management.dto.requests;
+package home.match_betting_server.admin.dto.requests;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,6 +2,7 @@ package home.match_betting_server.phases.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import home.match_betting_server.matches.domain.Match;
+import home.match_betting_server.phases.dto.responses.PhaseDetailedResponse;
 import home.match_betting_server.phases.dto.responses.PhaseSimplifiedResponse;
 import home.match_betting_server.phase_user_stats.domain.PhaseUserStats;
 import jakarta.persistence.*;
@@ -45,5 +46,9 @@ public class Phase {
 
     public PhaseSimplifiedResponse toSimplifiedResponse() {
         return new PhaseSimplifiedResponse(id, name);
+    }
+
+    public PhaseDetailedResponse toDetailedResponse() {
+        return new PhaseDetailedResponse(id, name, phaseType, phaseStatus);
     }
 }

@@ -1,4 +1,4 @@
-package home.match_betting_server.management.dto.responses;
+package home.match_betting_server.admin.dto.responses;
 
 import lombok.AllArgsConstructor;
 

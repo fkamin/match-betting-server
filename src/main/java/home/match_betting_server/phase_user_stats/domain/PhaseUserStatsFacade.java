@@ -1,9 +1,11 @@
 package home.match_betting_server.phase_user_stats.domain;
 
+import home.match_betting_server.phase_user_stats.dto.exceptions.NotAllowedOperationException;
 import home.match_betting_server.phase_user_stats.dto.exceptions.UserAlreadyJoinThatPhaseException;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSimplifiedResponse;
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.phases.domain.PhaseRepository;
+import home.match_betting_server.phases.domain.PhaseStatus;
 import home.match_betting_server.phases.dto.exceptions.PhaseNotFoundException;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
@@ -20,16 +22,29 @@ public class PhaseUserStatsFacade {
         this.phaseUserStatsRepository = phaseUserStatsRepository;
     }
 
-    public PhaseUserStatsSimplifiedResponse joinPhase(Long phaseId, Long userId) {
+    public PhaseUserStatsSimplifiedResponse joinUserToPhase(Long phaseId, Long userId) {
         Phase phase = findPhaseById(phaseId);
+        if (phase.getPhaseStatus() != PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION) throw new NotAllowedOperationException();
+
         User user = findUserById(userId);
 
-        isUserAlreadyInPhase(phase, user);
+        if (isUserAlreadyInPhase(phase, user)) throw new UserAlreadyJoinThatPhaseException();
 
         PhaseUserStats stats = new PhaseUserStats(user, phase);
 
         return phaseUserStatsRepository.save(stats).toSimplifiedResponse();
     }
+
+    //TODO(IN THE FUTURE)
+//    public PhaseUserStatsSimplifiedResponse removeUserFromPhase(Long phaseId, Long userId) {
+//        Phase phase = findPhaseById(phaseId);
+//        if (phase.getPhaseStatus() != PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION) throw new NotAllowedOperationException();
+//
+//        User user = findUserById(userId);
+//        if (isUserAlreadyInPhase(phase, user)) {
+//
+//        } else throw new UserDoesNotJoinedThatPhaseException();
+//    }
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -39,7 +54,7 @@ public class PhaseUserStatsFacade {
         return phaseRepository.findById(phaseId).orElseThrow(PhaseNotFoundException::new);
     }
 
-    private void isUserAlreadyInPhase(Phase phase, User user) {
-        if (phaseUserStatsRepository.existsByPhaseAndUser(phase, user)) throw new UserAlreadyJoinThatPhaseException();
+    private boolean isUserAlreadyInPhase(Phase phase, User user) {
+        return phaseUserStatsRepository.existsByPhaseAndUser(phase, user);
     }
 }

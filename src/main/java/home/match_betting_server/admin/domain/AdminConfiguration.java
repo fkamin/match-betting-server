@@ -1,4 +1,4 @@
-package home.match_betting_server.management.domain;
+package home.match_betting_server.admin.domain;
 
 import home.match_betting_server.auth.domain.PasswordService;
 import home.match_betting_server.users.domain.UserRepository;

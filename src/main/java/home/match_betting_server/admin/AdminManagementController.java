@@ -1,9 +1,10 @@
-package home.match_betting_server.management;
+package home.match_betting_server.admin;
 
-import home.match_betting_server.management.domain.AdminFacade;
-import home.match_betting_server.management.dto.requests.CreateUserRequest;
+import home.match_betting_server.admin.domain.AdminFacade;
+import home.match_betting_server.admin.dto.requests.CreateUserRequest;
 import home.match_betting_server.users.dto.responses.UserDetailedResponse;
 import home.match_betting_server.users.dto.responses.UserNewAccountResponse;
+import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,13 @@ public class AdminManagementController {
     }
 
     @GetMapping("/users")
-    public List<UserDetailedResponse> getAllUsers() {
+    public List<UserSimplifiedResponse> getAllUsers() {
         return adminFacade.getAllUsers();
+    }
+
+    @GetMapping("/users/{userId}")
+    public UserDetailedResponse getUserDetailed(@PathVariable Long userId) {
+        return adminFacade.getUserDetailed(userId);
     }
 
     @DeleteMapping("/users/{userId}")

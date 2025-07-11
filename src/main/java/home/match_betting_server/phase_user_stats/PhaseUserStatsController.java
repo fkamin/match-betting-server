@@ -13,8 +13,14 @@ public class PhaseUserStatsController {
         this.phaseUserStatsFacade = phaseUserStatsFacade;
     }
 
-    @PostMapping("/{phaseId}/join")
-    public PhaseUserStatsSimplifiedResponse joinPhase(@PathVariable Long phaseId, @RequestParam Long userId) {
-        return phaseUserStatsFacade.joinPhase(phaseId, userId);
+    @PostMapping("/{phaseId}/join-user")
+    public PhaseUserStatsSimplifiedResponse joinUserToPhase(@PathVariable Long phaseId, @RequestParam Long userId) {
+        return phaseUserStatsFacade.joinUserToPhase(phaseId, userId);
     }
+
+    //TODO(IN THE FUTURE)
+//    @PostMapping("/{phaseId}/remove-user")
+//    public PhaseUserStatsSimplifiedResponse removeUserFromPhase(@PathVariable Long phaseId, @RequestParam Long userId) {
+//        return phaseUserStatsFacade.removeUserFromPhase(phaseId, userId);
+//    }
 }
