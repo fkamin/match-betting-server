@@ -8,20 +8,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "bets")
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@Table(name = "bets")
 public class Bet {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "match_id")
     private Match match;
 
@@ -31,9 +31,9 @@ public class Bet {
     @Column(nullable = false)
     private Integer betRightScore;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "team_id")
     private Team betWinnerTeam;
 
-    private Integer pointsForBet = 0;
+    private Integer pointsForBet = null;
 }

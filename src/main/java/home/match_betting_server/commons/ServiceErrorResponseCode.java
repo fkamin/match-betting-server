@@ -24,7 +24,9 @@ public enum ServiceErrorResponseCode {
     PHASE06("Invalid phase status exception"),
 
     MATCH01("Match does not exist exception"),
-    MATCH02("Match is finished exception");
+    MATCH02("Match is finished exception"),
+
+    BET01("Bet already exists exception"),;
 
     private final String message;
 

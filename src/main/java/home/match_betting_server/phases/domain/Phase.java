@@ -51,4 +51,6 @@ public class Phase {
     public PhaseDetailedResponse toDetailedResponse() {
         return new PhaseDetailedResponse(id, name, phaseType, phaseStatus);
     }
+
+    public boolean isKnockout
 }
