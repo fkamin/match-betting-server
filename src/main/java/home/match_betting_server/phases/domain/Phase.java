@@ -1,7 +1,9 @@
 package home.match_betting_server.phases.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import home.match_betting_server.matches.domain.Match;
 import home.match_betting_server.phases.dto.responses.PhaseSimplifiedResponse;
+import home.match_betting_server.phase_user_stats.domain.PhaseUserStats;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +30,12 @@ public class Phase {
     private PhaseStatus phaseStatus;
 
     @OneToMany(mappedBy = "phase", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Match> matches = new ArrayList<>();
 
     @OneToMany(mappedBy = "phase", cascade = CascadeType.ALL)
-    private List<UserPhaseStats> userPhaseStats = new ArrayList<>();
+    @JsonManagedReference
+    private List<PhaseUserStats> phaseUserStats = new ArrayList<>();
 
     public Phase(String name, PhaseType phaseType, PhaseStatus phaseStatus) {
         this.name = name;

@@ -13,6 +13,8 @@ public class PhaseFacade {
 
     public PhaseSimplifiedResponse addPhase(CreatePhaseRequest createPhaseRequest) {
         if (phaseRepository.existsByName(createPhaseRequest.getName())) throw new PhaseWithThatNameAlreadyExistsException();
+
+        //TODO(Walidacja phase status)
         Phase newPhase = new Phase(
                 createPhaseRequest.getName(),
                 createPhaseRequest.getPhaseType(),

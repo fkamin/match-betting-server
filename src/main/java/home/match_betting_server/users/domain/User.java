@@ -1,6 +1,7 @@
 package home.match_betting_server.users.domain;
 
-import home.match_betting_server.phases.domain.UserPhaseStats;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import home.match_betting_server.phase_user_stats.domain.PhaseUserStats;
 import home.match_betting_server.users.dto.responses.UserDetailedResponse;
 import home.match_betting_server.users.dto.responses.UserNewAccountResponse;
 import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
@@ -34,7 +35,8 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserPhaseStats> userPhaseStats = new ArrayList<>();
+    @JsonManagedReference
+    private List<PhaseUserStats> phaseUserStats = new ArrayList<>();
 
     public User(String login, String password) {
         this.login = login;
@@ -52,7 +54,7 @@ public class User {
     }
 
     public UserDetailedResponse toDetailedResponse() {
-        return new UserDetailedResponse(id, login, name, role);
+        return new UserDetailedResponse(id, login, name, role, phaseUserStats);
     }
 
     public UserNewAccountResponse toNewAccountResponse(Long userId) {
