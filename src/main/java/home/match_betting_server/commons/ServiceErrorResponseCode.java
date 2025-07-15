@@ -22,6 +22,7 @@ public enum ServiceErrorResponseCode {
     PHASE04("Not allowed operation exception"),
     PHASE05("User does not joined that phase exception"),
     PHASE06("Invalid phase status exception"),
+    PHASE07("Phase user stats does not exists exception"),
 
     MATCH01("Match does not exist exception"),
     MATCH02("Match is finished exception"),

@@ -10,4 +10,5 @@ import java.util.List;
 public interface BetRepository extends JpaRepository<Bet, Long> {
     boolean existsByUserAndMatch(User user, Match match);
     List<Bet> findAllByUserAndMatchPhase(User user, Phase phase);
+    List<Bet> findAllByMatch(Match match);
 }

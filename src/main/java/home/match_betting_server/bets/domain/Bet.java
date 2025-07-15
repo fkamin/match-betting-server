@@ -39,6 +39,8 @@ public class Bet {
 
     private Integer pointsForBet = null;
 
+    private boolean maxPointsIn90Minutes = false;
+
     public Bet(User user, Match match, Integer betLeftScore, Integer betRightScore) {
         this.user = user;
         this.match = match;

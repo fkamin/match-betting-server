@@ -21,11 +21,13 @@ public class MatchFacade {
     private final MatchRepository matchRepository;
     private final PhaseRepository phaseRepository;
     private final TeamRepository teamRepository;
+    private final ScoringService scoringService;
 
-    public MatchFacade(MatchRepository matchRepository, PhaseRepository phaseRepository, TeamRepository teamRepository) {
+    public MatchFacade(MatchRepository matchRepository, PhaseRepository phaseRepository, TeamRepository teamRepository, ScoringService scoringService) {
         this.matchRepository = matchRepository;
         this.phaseRepository = phaseRepository;
         this.teamRepository = teamRepository;
+        this.scoringService = scoringService;
     }
 
     public MatchSimplifiedResponse createMatch(Long phaseId, CreateMatchRequest createMatchRequest) {
@@ -66,11 +68,18 @@ public class MatchFacade {
         Match matchToFinish = findMatchById(matchId);
 
         //TODO(WALIDACJA FINISH_MATCH_REQUEST)
-        matchToFinish.setTeamLeftScore(finishMatchRequest.getTeamLeftScore());
-        matchToFinish.setTeamRightScore(finishMatchRequest.getTeamRightScore());
+        if (matchToFinish.isMatchFinished()) throw new MatchIsFinishedException();
+        if (finishMatchRequest.getTeamLeftScore() >= 0 && finishMatchRequest.getTeamRightScore() >= 0) {
+            matchToFinish.setTeamLeftScore(finishMatchRequest.getTeamLeftScore());
+            matchToFinish.setTeamRightScore(finishMatchRequest.getTeamRightScore());
+        }
+
+        if (matchToFinish.getPhase().isKnockoutStage()) matchToFinish.setMatchWinner(finishMatchRequest.getWinnerTeam());
+
         matchToFinish.finishMatch();
 
         //TODO(PRZYDZIELANIE PUNKTOW)
+        scoringService.assignPointsForMatch(matchToFinish);
 
         return matchRepository.save(matchToFinish).toDetailedResponse();
     }

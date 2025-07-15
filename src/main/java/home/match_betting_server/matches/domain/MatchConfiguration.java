@@ -9,7 +9,11 @@ import org.springframework.context.annotation.Configuration;
 public class MatchConfiguration {
 
     @Bean
-    public MatchFacade matchFacade(MatchRepository matchRepository, PhaseRepository phaseRepository, TeamRepository teamRepository) {
-        return new MatchFacade(matchRepository, phaseRepository, teamRepository);
+    public MatchFacade matchFacade(
+            MatchRepository matchRepository,
+            PhaseRepository phaseRepository,
+            TeamRepository teamRepository,
+            ScoringService scoringService) {
+        return new MatchFacade(matchRepository, phaseRepository, teamRepository, scoringService);
     }
 }
