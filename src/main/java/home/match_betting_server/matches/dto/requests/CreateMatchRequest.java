@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class CreateMatchRequest {
-    private Long phaseId;
     private Long teamLeftId;
     private Long teamRightId;
     private LocalDateTime matchDate;

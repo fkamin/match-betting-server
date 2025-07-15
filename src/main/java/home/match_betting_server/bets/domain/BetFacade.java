@@ -3,10 +3,12 @@ package home.match_betting_server.bets.domain;
 import home.match_betting_server.bets.dto.exceptions.BetAlreadyExistsException;
 import home.match_betting_server.bets.dto.exceptions.BetDoesNotExistsException;
 import home.match_betting_server.bets.dto.requests.CreateBetRequest;
+import home.match_betting_server.bets.dto.requests.UpdateBetRequest;
 import home.match_betting_server.bets.dto.responses.BetDetailedResponse;
 import home.match_betting_server.bets.dto.responses.BetSimplifiedResponse;
 import home.match_betting_server.matches.domain.Match;
 import home.match_betting_server.matches.domain.MatchRepository;
+import home.match_betting_server.matches.dto.exceptions.MatchIsFinishedException;
 import home.match_betting_server.matches.dto.exceptions.MatchNotFoundException;
 import home.match_betting_server.phase_user_stats.domain.PhaseUserStatsRepository;
 import home.match_betting_server.phase_user_stats.dto.exceptions.NotAllowedOperationException;
@@ -19,7 +21,6 @@ import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
 import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BetFacade {
@@ -37,15 +38,15 @@ public class BetFacade {
         this.phaseUserStatsRepository = phaseUserStatsRepository;
     }
 
-    public BetSimplifiedResponse createBet(Long userId, Long phaseId, CreateBetRequest createBetRequest) {
+    public BetSimplifiedResponse createBet(Long userId, Long matchId, CreateBetRequest createBetRequest) {
         User user = findUserById(userId);
-        Phase phase = findPhaseById(phaseId);
-        Match match = findMatchById(createBetRequest.getMatchId());
+        Match match = findMatchById(matchId);
+        Phase phase = match.getPhase();
 
         validateBetCreationConditions(user, match, phase);
 
         Bet newBet = new Bet(user, match, createBetRequest.getBetLeftScore(), createBetRequest.getBetRightScore());
-        if (phase.isKnockoutStage() && match.teamExistsInMatch(createBetRequest.getBetWinnerTeam())) {
+        if (phase.isKnockoutStage()) {
             newBet.setBetWinnerTeam(createBetRequest.getBetWinnerTeam());
         }
 
@@ -67,6 +68,25 @@ public class BetFacade {
         return findBetById(betId).toDetailedResponse();
     }
 
+    public BetSimplifiedResponse updateBet(Long userId, Long matchId, Long betId, UpdateBetRequest updateBetRequest) {
+        User user = findUserById(userId);
+        Match match = findMatchById(matchId);
+        Phase phase = match.getPhase();
+        Bet newBet = findBetById(betId);
+
+        validateBetUpdateConditions(user, match, phase);
+
+        newBet.setBetLeftScore(updateBetRequest.getBetLeftScore());
+        newBet.setBetRightScore(updateBetRequest.getBetRightScore());
+        if (phase.isKnockoutStage()) {
+            newBet.setBetWinnerTeam(updateBetRequest.getBetWinnerTeam());
+        }
+
+        return betRepository.save(newBet).toSimplifiedResponse();
+    }
+
+
+
 
 
 
@@ -87,8 +107,31 @@ public class BetFacade {
     }
 
     private void validateBetCreationConditions(User user, Match match, Phase phase) {
+        isPhaseStatusInBetCreation(phase);
+        isMatchFinished(match);
+        doesUserJoinedPhase(user, phase);
+        doesBetAlreadyExists(user, match);
+    }
+
+    private void validateBetUpdateConditions(User user, Match match, Phase phase) {
+        isPhaseStatusInBetCreation(phase);
+        isMatchFinished(match);
+        doesUserJoinedPhase(user, phase);
+    }
+
+    private void isPhaseStatusInBetCreation(Phase phase) {
         if (phase.getPhaseStatus() != PhaseStatus.USER_BETS_CREATION) throw new NotAllowedOperationException();
+    }
+
+    private void isMatchFinished(Match match) {
+        if (match.isMatchFinished()) throw new MatchIsFinishedException();
+    }
+
+    private void doesUserJoinedPhase(User user, Phase phase) {
         if (!phaseUserStatsRepository.existsByPhaseAndUser(phase, user)) throw new UserDoesNotJoinedThatPhaseException();
+    }
+
+    private void doesBetAlreadyExists(User user, Match match) {
         if (betRepository.existsByUserAndMatch(user, match)) throw new BetAlreadyExistsException();
     }
 }

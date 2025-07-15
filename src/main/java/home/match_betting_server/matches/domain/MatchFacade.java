@@ -28,8 +28,8 @@ public class MatchFacade {
         this.teamRepository = teamRepository;
     }
 
-    public MatchSimplifiedResponse createMatch(CreateMatchRequest createMatchRequest) {
-        Phase phase = findPhaseById(createMatchRequest.getPhaseId());
+    public MatchSimplifiedResponse createMatch(Long phaseId, CreateMatchRequest createMatchRequest) {
+        Phase phase = findPhaseById(phaseId);
         Team teamLeft = findTeamById(createMatchRequest.getTeamLeftId());
         Team teamRight = findTeamById(createMatchRequest.getTeamRightId());
 
@@ -40,7 +40,7 @@ public class MatchFacade {
         return matchRepository.save(match).toSimplifiedResponse();
     }
 
-    public MatchDetailedResponse getMatch(Long matchId) {
+    public MatchDetailedResponse getMatch(Long phaseId, Long matchId) {
         return findMatchById(matchId).toDetailedResponse();
     }
 
@@ -49,7 +49,7 @@ public class MatchFacade {
         return matchRepository.findAllByPhase(phase).stream().map(Match::toSimplifiedResponse).toList();
     }
 
-    public MatchDetailedResponse updateMatch(Long matchId, UpdateMatchRequest updateMatchRequest) {
+    public MatchDetailedResponse updateMatch(Long phaseId, Long matchId, UpdateMatchRequest updateMatchRequest) {
         Match matchToUpdate = findMatchById(matchId);
         if (matchToUpdate.isMatchFinished()) throw new MatchIsFinishedException();
 
@@ -61,7 +61,7 @@ public class MatchFacade {
         return matchRepository.save(matchToUpdate).toDetailedResponse();
     }
 
-    public MatchDetailedResponse finishMatch(Long matchId, FinishMatchRequest finishMatchRequest) {
+    public MatchDetailedResponse finishMatch(Long phaseId, Long matchId, FinishMatchRequest finishMatchRequest) {
         //TODO(OBSLUGA EVENTU - W PRZYSZLOSCI?)
         Match matchToFinish = findMatchById(matchId);
 
@@ -75,7 +75,7 @@ public class MatchFacade {
         return matchRepository.save(matchToFinish).toDetailedResponse();
     }
 
-    public ResponseEntity<String> deleteMatch(Long matchId) {
+    public ResponseEntity<String> deleteMatch(Long phaseId, Long matchId) {
         Match matchToDelete = findMatchById(matchId);
         matchRepository.delete(matchToDelete);
 

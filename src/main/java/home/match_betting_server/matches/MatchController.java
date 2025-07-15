@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1_1/matches")
+@RequestMapping("/api/v1_1/phases")
 public class MatchController {
     private final MatchFacade matchFacade;
 
@@ -20,33 +20,33 @@ public class MatchController {
         this.matchFacade = matchFacade;
     }
 
-    @PostMapping
-    public MatchSimplifiedResponse createMatch(@RequestBody CreateMatchRequest createMatchRequest) {
-        return matchFacade.createMatch(createMatchRequest);
+    @PostMapping("/{phaseId}/matches")
+    public MatchSimplifiedResponse createMatch(@PathVariable Long phaseId, @RequestBody CreateMatchRequest createMatchRequest) {
+        return matchFacade.createMatch(phaseId, createMatchRequest);
     }
 
-    @GetMapping("/{matchId}")
-    public MatchDetailedResponse getMatch(@PathVariable Long matchId) {
-        return matchFacade.getMatch(matchId);
+    @GetMapping("/{phaseId}/matches/{matchId}")
+    public MatchDetailedResponse getMatch(@PathVariable Long phaseId, @PathVariable Long matchId) {
+        return matchFacade.getMatch(phaseId, matchId);
     }
 
-    @GetMapping
-    public List<MatchSimplifiedResponse> getAllMatches(@RequestParam Long phaseId) {
+    @GetMapping("/{phaseId}/matches")
+    public List<MatchSimplifiedResponse> getAllMatches(@PathVariable Long phaseId) {
         return matchFacade.getAllMatches(phaseId);
     }
 
-    @PutMapping("/{matchId}")
-    public MatchDetailedResponse updateMatch(@PathVariable Long matchId, @RequestBody UpdateMatchRequest updateMatchRequest) {
-        return matchFacade.updateMatch(matchId, updateMatchRequest);
+    @PutMapping("/{phaseId}/matches/{matchId}")
+    public MatchDetailedResponse updateMatch(@PathVariable Long phaseId, @PathVariable Long matchId, @RequestBody UpdateMatchRequest updateMatchRequest) {
+        return matchFacade.updateMatch(phaseId, matchId, updateMatchRequest);
     }
 
-    @PutMapping("/{matchId}/finish-match")
-    public MatchDetailedResponse finishMatch(@PathVariable Long matchId, @RequestBody FinishMatchRequest finishMatchRequest) {
-        return matchFacade.finishMatch(matchId, finishMatchRequest);
+    @PutMapping("/{phaseId}/matches/{matchId}/finish-match")
+    public MatchDetailedResponse finishMatch(@PathVariable Long phaseId, @PathVariable Long matchId, @RequestBody FinishMatchRequest finishMatchRequest) {
+        return matchFacade.finishMatch(phaseId, matchId, finishMatchRequest);
     }
 
-    @DeleteMapping("/{matchId}")
-    public ResponseEntity<String> deleteMatch(@PathVariable Long matchId) {
-        return matchFacade.deleteMatch(matchId);
+    @DeleteMapping("/{phaseId}/matches/{matchId}")
+    public ResponseEntity<String> deleteMatch(@PathVariable Long phaseId, @PathVariable Long matchId) {
+        return matchFacade.deleteMatch(phaseId, matchId);
     }
 }
