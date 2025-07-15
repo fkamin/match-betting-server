@@ -52,5 +52,11 @@ public class Phase {
         return new PhaseDetailedResponse(id, name, phaseType, phaseStatus);
     }
 
-    public boolean isKnockout
+    public boolean isKnockoutStage() {
+        return this.phaseType == PhaseType.KNOCKOUT_STAGE;
+    }
+
+    public boolean isGroupStage() {
+        return this.phaseType == PhaseType.GROUP_STAGE;
+    }
 }

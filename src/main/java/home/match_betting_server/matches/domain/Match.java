@@ -61,6 +61,10 @@ public class Match {
         this.matchStatus = MatchStatus.FINISHED;
     }
 
+    public boolean teamExistsInMatch(Team team) {
+        return this.teamLeft.equals(team) || this.teamRight.equals(team);
+    }
+
     // --- Pomocnicze metody biznesowe ---
 
 //    public boolean isGroupStage() {

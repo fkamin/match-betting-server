@@ -1,5 +1,6 @@
 package home.match_betting_server.bets.domain;
 
+import home.match_betting_server.bets.dto.responses.BetSimplifiedResponse;
 import home.match_betting_server.matches.domain.Match;
 import home.match_betting_server.teams.domain.Team;
 import home.match_betting_server.users.domain.User;
@@ -36,4 +37,15 @@ public class Bet {
     private Team betWinnerTeam;
 
     private Integer pointsForBet = null;
+
+    public Bet(User user, Match match, Integer betLeftScore, Integer betRightScore) {
+        this.user = user;
+        this.match = match;
+        this.betLeftScore = betLeftScore;
+        this.betRightScore = betRightScore;
+    }
+
+    public BetSimplifiedResponse toSimplifiedResponse() {
+        return new BetSimplifiedResponse(id, betLeftScore, betRightScore);
+    }
 }

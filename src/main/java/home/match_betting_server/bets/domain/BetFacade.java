@@ -12,7 +12,6 @@ import home.match_betting_server.phase_user_stats.dto.exceptions.UserDoesNotJoin
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.phases.domain.PhaseRepository;
 import home.match_betting_server.phases.domain.PhaseStatus;
-import home.match_betting_server.phases.domain.PhaseType;
 import home.match_betting_server.phases.dto.exceptions.PhaseNotFoundException;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
@@ -39,7 +38,13 @@ public class BetFacade {
         Phase phase = findPhaseById(match.getPhase().getId());
 
         validateBetCreationConditions(user, match, phase);
-        if (isMatchInKnockoutStage(phase))
+
+        Bet newBet = new Bet(user, match, createBetRequest.getBetLeftScore(), createBetRequest.getBetRightScore());
+        if (phase.isKnockoutStage() && match.teamExistsInMatch(createBetRequest.getBetWinnerTeam())) {
+            newBet.setBetWinnerTeam(createBetRequest.getBetWinnerTeam());
+        }
+
+        return betRepository.save(newBet).toSimplifiedResponse();
     }
 
     private User findUserById(Long userId) {
@@ -58,9 +63,5 @@ public class BetFacade {
         if (phase.getPhaseStatus() != PhaseStatus.USER_BETS_CREATION) throw new NotAllowedOperationException();
         if (!phaseUserStatsRepository.existsByPhaseAndUser(phase, user)) throw new UserDoesNotJoinedThatPhaseException();
         if (betRepository.existsByUserAndMatch(user, match)) throw new BetAlreadyExistsException();
-    }
-
-    private boolean isMatchInKnockoutStage(Phase phase) {
-        return phase.getPhaseType() == PhaseType.KNOCKOUT_STAGE;
     }
 }
