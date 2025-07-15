@@ -6,8 +6,10 @@ import home.match_betting_server.bets.dto.responses.BetDetailedResponse;
 import home.match_betting_server.bets.dto.responses.BetSimplifiedResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/v1_1/bets")
+@RequestMapping("/api/v1_1/users")
 public class BetController {
     private final BetFacade betFacade;
 
@@ -15,8 +17,18 @@ public class BetController {
         this.betFacade = betFacade;
     }
 
-    @PostMapping
-    public BetSimplifiedResponse createBet(@RequestParam Long userId, @RequestBody CreateBetRequest createBetRequest) {
-        return betFacade.createBet(userId, createBetRequest);
+    @PostMapping("/{userId}/phases/{phaseId}/bets")
+    public BetSimplifiedResponse createBet(@PathVariable Long userId, @PathVariable Long phaseId, @RequestBody CreateBetRequest createBetRequest) {
+        return betFacade.createBet(userId, phaseId, createBetRequest);
+    }
+
+    @GetMapping("/{userId}/phases/{phaseId}/bets")
+    public List<BetDetailedResponse> getAllBetsFromUserInPhase(@PathVariable Long userId, @PathVariable Long phaseId) {
+        return betFacade.getAllBetsFromUserInPhase(userId, phaseId);
+    }
+
+    @GetMapping("/{userId}/phases/{phaseId}/bets/{betId}")
+    public BetDetailedResponse getBetFromUserInPhase(@PathVariable Long userId, @PathVariable Long phaseId, @PathVariable Long betId) {
+        return betFacade.getBetById(userId, phaseId, betId);
     }
 }

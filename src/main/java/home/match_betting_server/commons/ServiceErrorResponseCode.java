@@ -26,7 +26,8 @@ public enum ServiceErrorResponseCode {
     MATCH01("Match does not exist exception"),
     MATCH02("Match is finished exception"),
 
-    BET01("Bet already exists exception"),;
+    BET01("Bet already exists exception"),
+    BET02("Bet does not exist exception"),;
 
     private final String message;
 

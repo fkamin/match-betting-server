@@ -1,5 +1,6 @@
 package home.match_betting_server.bets.domain;
 
+import home.match_betting_server.bets.dto.responses.BetDetailedResponse;
 import home.match_betting_server.bets.dto.responses.BetSimplifiedResponse;
 import home.match_betting_server.matches.domain.Match;
 import home.match_betting_server.teams.domain.Team;
@@ -47,5 +48,9 @@ public class Bet {
 
     public BetSimplifiedResponse toSimplifiedResponse() {
         return new BetSimplifiedResponse(id, betLeftScore, betRightScore);
+    }
+
+    public BetDetailedResponse toDetailedResponse() {
+        return new BetDetailedResponse(id, user.getId(), match.getId(), betLeftScore, betRightScore, betWinnerTeam);
     }
 }

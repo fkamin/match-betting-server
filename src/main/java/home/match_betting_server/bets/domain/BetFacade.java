@@ -1,7 +1,9 @@
 package home.match_betting_server.bets.domain;
 
 import home.match_betting_server.bets.dto.exceptions.BetAlreadyExistsException;
+import home.match_betting_server.bets.dto.exceptions.BetDoesNotExistsException;
 import home.match_betting_server.bets.dto.requests.CreateBetRequest;
+import home.match_betting_server.bets.dto.responses.BetDetailedResponse;
 import home.match_betting_server.bets.dto.responses.BetSimplifiedResponse;
 import home.match_betting_server.matches.domain.Match;
 import home.match_betting_server.matches.domain.MatchRepository;
@@ -16,6 +18,9 @@ import home.match_betting_server.phases.dto.exceptions.PhaseNotFoundException;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
 import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BetFacade {
     private final BetRepository betRepository;
@@ -32,10 +37,10 @@ public class BetFacade {
         this.phaseUserStatsRepository = phaseUserStatsRepository;
     }
 
-    public BetSimplifiedResponse createBet(Long userId, CreateBetRequest createBetRequest) {
+    public BetSimplifiedResponse createBet(Long userId, Long phaseId, CreateBetRequest createBetRequest) {
         User user = findUserById(userId);
+        Phase phase = findPhaseById(phaseId);
         Match match = findMatchById(createBetRequest.getMatchId());
-        Phase phase = findPhaseById(match.getPhase().getId());
 
         validateBetCreationConditions(user, match, phase);
 
@@ -47,6 +52,24 @@ public class BetFacade {
         return betRepository.save(newBet).toSimplifiedResponse();
     }
 
+    public List<BetDetailedResponse> getAllBetsFromUserInPhase(Long userId, Long phaseId) {
+        User user = findUserById(userId);
+        Phase phase = findPhaseById(phaseId);
+
+        return betRepository.findAllByUserAndMatchPhase(user, phase).stream().map(Bet::toDetailedResponse).toList();
+    }
+
+    public BetDetailedResponse getBetById(Long userId, Long phaseId, Long betId) {
+        //TODO(ZASTANOWIC SIE NAD ZMIANA TEGO)
+        findUserById(userId);
+        findPhaseById(phaseId);
+
+        return findBetById(betId).toDetailedResponse();
+    }
+
+
+
+
     private User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
@@ -57,6 +80,10 @@ public class BetFacade {
 
     private Phase findPhaseById(Long phaseId) {
         return phaseRepository.findById(phaseId).orElseThrow(PhaseNotFoundException::new);
+    }
+
+    private Bet findBetById(Long betId) {
+        return betRepository.findById(betId).orElseThrow(BetDoesNotExistsException::new);
     }
 
     private void validateBetCreationConditions(User user, Match match, Phase phase) {
