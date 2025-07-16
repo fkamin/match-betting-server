@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class UpdateTeamRequest {
     private String name;
-    private Long groupId;
 }

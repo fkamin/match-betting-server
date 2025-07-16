@@ -30,8 +30,8 @@ public class Team {
         this.group = group;
     }
 
-    public TeamDetailedResponse toDetailedResponse(Long groupId) {
-        return new TeamDetailedResponse(id, name, groupId);
+    public TeamDetailedResponse toDetailedResponse() {
+        return new TeamDetailedResponse(id, name, group.getId());
     }
 
     public TeamSimplifiedResponse toSimplifiedResponse() {

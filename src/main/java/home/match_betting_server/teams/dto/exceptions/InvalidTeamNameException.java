@@ -4,8 +4,8 @@ import home.match_betting_server.commons.ApiException;
 import home.match_betting_server.commons.ServiceErrorResponseCode;
 import org.springframework.http.HttpStatus;
 
-public class TeamNotFoundException extends ApiException {
-    public TeamNotFoundException() {
-        super(ServiceErrorResponseCode.TEAM02, HttpStatus.NOT_FOUND);
+public class InvalidTeamNameException extends ApiException {
+    public InvalidTeamNameException() {
+        super(ServiceErrorResponseCode.TEAM03, HttpStatus.BAD_REQUEST);
     }
 }

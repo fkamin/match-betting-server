@@ -22,12 +22,11 @@ public class PhaseUserStatsFacade {
         this.phaseUserStatsRepository = phaseUserStatsRepository;
     }
 
-    public PhaseUserStatsSimplifiedResponse joinUserToPhase(Long phaseId, Long userId) {
-        Phase phase = findPhaseById(phaseId);
-        if (phase.getPhaseStatus() != PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION) throw new NotAllowedOperationException();
-
+    public PhaseUserStatsSimplifiedResponse joinUserToPhase(Long userId, Long phaseId) {
         User user = findUserById(userId);
+        Phase phase = findPhaseById(phaseId);
 
+        if (phase.getPhaseStatus() != PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION) throw new NotAllowedOperationException();
         if (isUserAlreadyInPhase(phase, user)) throw new UserAlreadyJoinThatPhaseException();
 
         PhaseUserStats stats = new PhaseUserStats(user, phase);

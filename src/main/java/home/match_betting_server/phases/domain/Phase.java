@@ -60,5 +60,8 @@ public class Phase {
         return this.phaseType == PhaseType.GROUP_STAGE;
     }
 
+    public boolean isPhaseInMatchesAndUsersCreation() {
+        return this.phaseStatus == PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION;
+    }
 
 }

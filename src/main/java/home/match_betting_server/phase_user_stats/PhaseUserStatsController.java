@@ -5,7 +5,7 @@ import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSi
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1_1/phases")
+@RequestMapping("/api/v1_1/users")
 public class PhaseUserStatsController {
     private final PhaseUserStatsFacade phaseUserStatsFacade;
 
@@ -13,9 +13,9 @@ public class PhaseUserStatsController {
         this.phaseUserStatsFacade = phaseUserStatsFacade;
     }
 
-    @PostMapping("/{phaseId}/join-user")
-    public PhaseUserStatsSimplifiedResponse joinUserToPhase(@PathVariable Long phaseId, @RequestParam Long userId) {
-        return phaseUserStatsFacade.joinUserToPhase(phaseId, userId);
+    @PostMapping("/{userId}/phases/{phaseId}/join-user")
+    public PhaseUserStatsSimplifiedResponse joinUserToPhase(@PathVariable Long userId, @PathVariable Long phaseId) {
+        return phaseUserStatsFacade.joinUserToPhase(userId, phaseId);
     }
 
     //TODO(IN THE FUTURE)

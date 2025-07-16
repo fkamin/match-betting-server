@@ -1,9 +1,6 @@
 package home.match_betting_server.teams.domain;
 
-import home.match_betting_server.teams.dto.exceptions.GroupNotFoundException;
-import home.match_betting_server.teams.dto.exceptions.GroupWithThatNameAlreadyExistsException;
-import home.match_betting_server.teams.dto.exceptions.TeamNotFoundException;
-import home.match_betting_server.teams.dto.exceptions.TeamWithThatNameAlreadyExistsException;
+import home.match_betting_server.teams.dto.exceptions.*;
 import home.match_betting_server.teams.dto.requests.CreateGroupRequest;
 import home.match_betting_server.teams.dto.requests.CreateTeamRequest;
 import home.match_betting_server.teams.dto.requests.UpdateGroupNameRequest;
@@ -53,15 +50,14 @@ public class TeamFacade {
     }
 
     public TeamDetailedResponse createTeam(CreateTeamRequest createTeamRequest, Long groupId) {
-        if (teamRepository.existsByName(createTeamRequest.getName()) && createTeamRequest.getName() != null)
-            throw new TeamWithThatNameAlreadyExistsException();
+        validateTeamCreationConditions(createTeamRequest.getName());
 
         Group group = findGroupById(groupId);
         Team newTeam = new Team(createTeamRequest.getName(), group);
 
         group.getTeams().add(newTeam);
 
-        return teamRepository.save(newTeam).toDetailedResponse(groupId);
+        return teamRepository.save(newTeam).toDetailedResponse();
     }
 
     public List<TeamSimplifiedResponse> getAllTeams(Long groupId) {
@@ -71,23 +67,26 @@ public class TeamFacade {
     }
 
     public TeamDetailedResponse getTeam(Long groupId, Long teamId) {
-        return findTeamById(teamId).toDetailedResponse(groupId);
+        findGroupById(groupId);
+        return findTeamById(teamId).toDetailedResponse();
     }
 
     public TeamDetailedResponse updateTeam(UpdateTeamRequest updateTeamRequest, Long groupId, Long teamId) {
-        Group newGroup = findGroupById(updateTeamRequest.getGroupId());
+        Group newGroup = findGroupById(groupId);
         Team team = findTeamById(teamId);
+
+        validateTeamName(updateTeamRequest.getName());
 
         team.setName(updateTeamRequest.getName());
         team.setGroup(newGroup);
 
-        return teamRepository.save(team).toDetailedResponse(groupId);
+        return teamRepository.save(team).toDetailedResponse();
     }
 
     public ResponseEntity<String> deleteTeam(Long groupId, Long teamId) {
-        Team team = findTeamById(teamId);
-        teamRepository.delete(team);
-        return ResponseEntity.ok("Deleted team with id " + teamId + " from group with id " + groupId);
+        findGroupById(groupId);
+        teamRepository.delete(findTeamById(teamId));
+        return ResponseEntity.noContent().build();
     }
 
     private Group findGroupById(Long groupId) {
@@ -95,6 +94,19 @@ public class TeamFacade {
     }
 
     private Team findTeamById(Long teamId) {
-        return teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        return teamRepository.findById(teamId).orElseThrow(TeamDoesNotExistsException::new);
+    }
+
+    private void validateTeamCreationConditions(String name) {
+        doesTeamAlreadyExists(name);
+        validateTeamName(name);
+    }
+
+    private void doesTeamAlreadyExists(String name) {
+        if (teamRepository.existsByName(name)) throw new TeamWithThatNameAlreadyExistsException();
+    }
+
+    private void validateTeamName(String name) {
+        if (teamRepository.existsByName(name) && name != null) throw new InvalidTeamNameException();
     }
 }

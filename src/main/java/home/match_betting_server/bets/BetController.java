@@ -28,9 +28,9 @@ public class BetController {
         return betFacade.getAllBetsFromUserInPhase(userId, phaseId);
     }
 
-    @GetMapping("/{userId}/phases/{phaseId}/bets/{betId}")
-    public BetDetailedResponse getBetFromUserInPhase(@PathVariable Long userId, @PathVariable Long phaseId, @PathVariable Long betId) {
-        return betFacade.getBetById(userId, phaseId, betId);
+    @GetMapping("/{userId}/matches/{matchId}/bets/{betId}")
+    public BetDetailedResponse getBetFromUserInPhase(@PathVariable Long userId, @PathVariable Long matchId, @PathVariable Long betId) {
+        return betFacade.getBetById(userId, matchId, betId);
     }
 
     @PutMapping("/{userId}/matches/{matchId}/bets/{betId}")

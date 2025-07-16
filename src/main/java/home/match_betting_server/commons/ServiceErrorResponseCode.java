@@ -15,6 +15,7 @@ public enum ServiceErrorResponseCode {
 
     TEAM01("Team with that name already exists exception"),
     TEAM02("Team does not exists exception"),
+    TEAM03("Invalid team name exception"),
 
     PHASE01("Phase with that name already exists exception"),
     PHASE02("Phase does not exists exception"),
@@ -26,6 +27,8 @@ public enum ServiceErrorResponseCode {
 
     MATCH01("Match does not exist exception"),
     MATCH02("Match is finished exception"),
+    MATCH03("Teams must be different exception"),
+    MATCH04("Teams must be from the same group exception"),
 
     BET01("Bet already exists exception"),
     BET02("Bet does not exist exception"),;
