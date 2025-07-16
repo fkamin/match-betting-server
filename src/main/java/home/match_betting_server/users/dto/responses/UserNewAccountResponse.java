@@ -2,9 +2,11 @@ package home.match_betting_server.users.dto.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
-@AllArgsConstructor
 @Getter
+@Setter
+@AllArgsConstructor
 public class UserNewAccountResponse {
     private Long id;
     private String name;
