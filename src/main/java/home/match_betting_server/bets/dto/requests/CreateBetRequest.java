@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateBetRequest {
-    private Long matchId;
     private Integer betLeftScore;
     private Integer betRightScore;
     private Long betWinnerTeamId;

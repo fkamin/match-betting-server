@@ -12,6 +12,7 @@ public enum ServiceErrorResponseCode {
 
     GROUP01("Group with that name already exists exception"),
     GROUP02("Group does not exists exception"),
+    GROUP03("Invalid group name exception"),
 
     TEAM01("Team with that name already exists exception"),
     TEAM02("Team does not exists exception"),
@@ -29,6 +30,7 @@ public enum ServiceErrorResponseCode {
     MATCH02("Match is finished exception"),
     MATCH03("Teams must be different exception"),
     MATCH04("Teams must be from the same group exception"),
+    MATCH05("Match already exists exception"),
 
     BET01("Bet already exists exception"),
     BET02("Bet does not exist exception"),;

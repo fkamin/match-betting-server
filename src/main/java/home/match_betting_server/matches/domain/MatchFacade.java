@@ -1,9 +1,6 @@
 package home.match_betting_server.matches.domain;
 
-import home.match_betting_server.matches.dto.exceptions.MatchIsFinishedException;
-import home.match_betting_server.matches.dto.exceptions.MatchDoesNotExistsException;
-import home.match_betting_server.matches.dto.exceptions.TeamsMustBeDifferentException;
-import home.match_betting_server.matches.dto.exceptions.TeamsMustBeFromTheSameGroupException;
+import home.match_betting_server.matches.dto.exceptions.*;
 import home.match_betting_server.matches.dto.requests.CreateMatchRequest;
 import home.match_betting_server.matches.dto.requests.FinishMatchRequest;
 import home.match_betting_server.matches.dto.requests.UpdateMatchRequest;
@@ -49,6 +46,7 @@ public class MatchFacade {
     private Match validateMatchCreationConditionsAndReturn(Phase phase, Team teamLeft, Team teamRight, LocalDateTime matchDate) {
         isPhaseInMatchesAndAccountsCreationStatus(phase);
         areTwoTeamsDifferent(teamLeft, teamRight);
+        doesMatchAlreadyExists(teamLeft, teamRight);
 
         if (phase.isGroupStage()) {
             areTwoTeamsFromTheSameGroup(teamLeft.getGroup(), teamRight.getGroup());
@@ -68,13 +66,12 @@ public class MatchFacade {
     }
 
     public MatchDetailedResponse updateMatch(Long phaseId, Long matchId, UpdateMatchRequest updateMatchRequest) {
-        findPhaseById(phaseId);
+        Phase phase = findPhaseById(phaseId);
         Match matchToUpdate = findMatchById(matchId);
-        if (matchToUpdate.isMatchFinished()) throw new MatchIsFinishedException();
 
-        //TODO(WALIDACJA UPDATE_MATCH_REQUEST)
-
-        areTwoTeamsDifferent();
+        Team teamLeft = findTeamById(updateMatchRequest.getTeamLeftId());
+        Team teamRight = findTeamById(updateMatchRequest.getTeamRightId());
+        validateMatchUpdateConditions(phase, teamLeft, teamRight, matchToUpdate);
 
         matchToUpdate.setTeamLeft(findTeamById(updateMatchRequest.getTeamLeftId()));
         matchToUpdate.setTeamRight(findTeamById(updateMatchRequest.getTeamRightId()));
@@ -83,13 +80,24 @@ public class MatchFacade {
         return matchRepository.save(matchToUpdate).toDetailedResponse();
     }
 
+    private void validateMatchUpdateConditions(Phase phase, Team teamLeft, Team teamRight, Match matchToUpdate) {
+        isPhaseInMatchesAndAccountsCreationStatus(phase);
+        areTwoTeamsDifferent(teamLeft, teamRight);
+        isMatchFinished(matchToUpdate);
+
+        if (phase.isGroupStage()) {
+            areTwoTeamsFromTheSameGroup(teamLeft.getGroup(), teamRight.getGroup());
+        }
+    }
+
     public MatchDetailedResponse finishMatch(Long phaseId, Long matchId, FinishMatchRequest finishMatchRequest) {
         findPhaseById(phaseId);
         //TODO(OBSLUGA EVENTU - W PRZYSZLOSCI?)
         Match matchToFinish = findMatchById(matchId);
 
         //TODO(WALIDACJA FINISH_MATCH_REQUEST)
-        if (matchToFinish.isMatchFinished()) throw new MatchIsFinishedException();
+        isMatchFinished(matchToFinish);
+
         if (finishMatchRequest.getTeamLeftScore() >= 0 && finishMatchRequest.getTeamRightScore() >= 0) {
             matchToFinish.setTeamLeftScore(finishMatchRequest.getTeamLeftScore());
             matchToFinish.setTeamRightScore(finishMatchRequest.getTeamRightScore());
@@ -101,11 +109,12 @@ public class MatchFacade {
         }
 
         matchToFinish.finishMatch();
+        matchRepository.save(matchToFinish);
 
         //TODO(PRZYDZIELANIE PUNKTOW)
         scoringService.assignPointsForMatch(matchToFinish);
 
-        return matchRepository.save(matchToFinish).toDetailedResponse();
+        return matchToFinish.toDetailedResponse();
     }
 
     public ResponseEntity<String> deleteMatch(Long phaseId, Long matchId) {
@@ -140,6 +149,14 @@ public class MatchFacade {
 
     private void isPhaseInMatchesAndAccountsCreationStatus(Phase phase) {
         if (!phase.isPhaseInMatchesAndUsersCreation()) throw new InvalidPhaseStatusException();
+    }
+
+    private void isMatchFinished(Match matchToFinish) {
+        if (matchToFinish.isMatchFinished()) throw new MatchIsFinishedException();
+    }
+
+    private void doesMatchAlreadyExists(Team teamLeft, Team teamRight) {
+        if (matchRepository.existsByTeamsRegardlessOfSide(teamLeft, teamRight)) throw new MatchAlreadyExistsException();
     }
 
 }

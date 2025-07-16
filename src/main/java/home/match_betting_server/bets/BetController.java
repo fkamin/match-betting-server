@@ -34,7 +34,7 @@ public class BetController {
     }
 
     @PutMapping("/{userId}/matches/{matchId}/bets/{betId}")
-    public BetSimplifiedResponse updateBet(@PathVariable Long userId, @PathVariable Long matchId, @PathVariable Long betId, UpdateBetRequest updateBetRequest) {
+    public BetSimplifiedResponse updateBet(@PathVariable Long userId, @PathVariable Long matchId, @PathVariable Long betId, @RequestBody UpdateBetRequest updateBetRequest) {
         return betFacade.updateBet(userId, matchId, betId, updateBetRequest);
     }
 

@@ -4,8 +4,8 @@ import home.match_betting_server.commons.ApiException;
 import home.match_betting_server.commons.ServiceErrorResponseCode;
 import org.springframework.http.HttpStatus;
 
-public class GroupNotFoundException extends ApiException {
-    public GroupNotFoundException() {
-        super(ServiceErrorResponseCode.GROUP02, HttpStatus.NOT_FOUND);
+public class InvalidGroupNameException extends ApiException {
+    public InvalidGroupNameException() {
+        super(ServiceErrorResponseCode.GROUP03, HttpStatus.BAD_REQUEST);
     }
 }

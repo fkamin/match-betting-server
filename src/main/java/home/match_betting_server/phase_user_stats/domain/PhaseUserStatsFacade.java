@@ -2,6 +2,7 @@ package home.match_betting_server.phase_user_stats.domain;
 
 import home.match_betting_server.phase_user_stats.dto.exceptions.NotAllowedOperationException;
 import home.match_betting_server.phase_user_stats.dto.exceptions.UserAlreadyJoinThatPhaseException;
+import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsDetailedResponse;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSimplifiedResponse;
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.phases.domain.PhaseRepository;
@@ -32,6 +33,15 @@ public class PhaseUserStatsFacade {
         PhaseUserStats stats = new PhaseUserStats(user, phase);
 
         return phaseUserStatsRepository.save(stats).toSimplifiedResponse();
+    }
+
+    public PhaseUserStatsDetailedResponse getUserStats(Long userId, Long phaseId) {
+        User user = findUserById(userId);
+        Phase phase = findPhaseById(phaseId);
+
+        PhaseUserStats phaseUserStats = phaseUserStatsRepository.findByPhaseAndUser(phase, user).orElseThrow(PhaseNotFoundException::new);
+
+        return phaseUserStats.toDetailedResponse();
     }
 
     //TODO(IN THE FUTURE)

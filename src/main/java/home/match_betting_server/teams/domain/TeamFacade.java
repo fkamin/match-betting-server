@@ -23,10 +23,22 @@ public class TeamFacade {
     }
 
     public GroupSimplifiedResponse createGroup(CreateGroupRequest createGroupRequest) {
-        if (groupRepository.existsByName(createGroupRequest.getName()))
-            throw new GroupWithThatNameAlreadyExistsException();
+        validateGroupCreationConditions(createGroupRequest);
 
         return groupRepository.save(new Group(createGroupRequest.getName())).toSimplifiedResponse();
+    }
+
+    private void validateGroupCreationConditions(CreateGroupRequest createGroupRequest) {
+        isNewGroupNameNullOrEmpty(createGroupRequest.getName());
+        doesGroupAlreadyExists(createGroupRequest.getName());
+    }
+
+    private void isNewGroupNameNullOrEmpty(String name) {
+        if (name == null || name.isEmpty()) throw new InvalidGroupNameException();
+    }
+
+    private void doesGroupAlreadyExists(String name) {
+        if (groupRepository.existsByName(name)) throw new GroupWithThatNameAlreadyExistsException();
     }
 
     public List<GroupSimplifiedResponse> getAllGroups() {
@@ -90,7 +102,7 @@ public class TeamFacade {
     }
 
     private Group findGroupById(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(GroupNotFoundException::new);
+        return groupRepository.findById(groupId).orElseThrow(GroupDoesNotExistsException::new);
     }
 
     private Team findTeamById(Long teamId) {

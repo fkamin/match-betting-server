@@ -10,10 +10,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1_1/users")
-public class UserCrudController {
+public class UserController {
     private final UserFacade userFacade;
 
-    public UserCrudController(UserFacade userFacade) {
+    public UserController(UserFacade userFacade) {
         this.userFacade = userFacade;
     }
 

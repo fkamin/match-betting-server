@@ -1,6 +1,7 @@
 package home.match_betting_server.phase_user_stats.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsDetailedResponse;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSimplifiedResponse;
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.users.domain.User;
@@ -29,7 +30,7 @@ public class PhaseUserStats {
 
     private int points;
     private int betsWithMaxScore;
-    private double percentageOfCorrectGuesses;
+    private int percentageOfCorrectGuesses;
     private int rankingPosition;
 
     public PhaseUserStats(User user, Phase phase) {
@@ -43,5 +44,9 @@ public class PhaseUserStats {
 
     public PhaseUserStatsSimplifiedResponse toSimplifiedResponse() {
         return new PhaseUserStatsSimplifiedResponse(id, user.getId(), phase.getId());
+    }
+
+    public PhaseUserStatsDetailedResponse toDetailedResponse() {
+        return new PhaseUserStatsDetailedResponse(id, user.getId(), phase.getId(), points, betsWithMaxScore, percentageOfCorrectGuesses, rankingPosition);
     }
 }

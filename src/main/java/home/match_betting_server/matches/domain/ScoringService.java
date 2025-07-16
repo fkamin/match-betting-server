@@ -74,13 +74,13 @@ public class ScoringService {
             phaseUserStats.setBetsWithMaxScore(phaseUserStats.getBetsWithMaxScore() + 1);
         }
 
-        double percentageOfCorrectGuesses = calculatePercentageOfCorrectGuesses(phaseUserStats);
+        int percentageOfCorrectGuesses = calculatePercentageOfCorrectGuesses(phaseUserStats);
         phaseUserStats.setPercentageOfCorrectGuesses(percentageOfCorrectGuesses);
 
         phaseUserStatsRepository.save(phaseUserStats);
     }
 
-    private double calculatePercentageOfCorrectGuesses(PhaseUserStats phaseUserStats) {
+    private int calculatePercentageOfCorrectGuesses(PhaseUserStats phaseUserStats) {
         PhaseType phaseType = phaseUserStats.getPhase().getPhaseType();
         int multiplier = 1;
 
@@ -90,19 +90,57 @@ public class ScoringService {
             multiplier = 5;
         }
 
-        int maxPoints = phaseUserStats.getPhase().getMatches().size() * multiplier;
+        long finishedMatchesCount = phaseUserStats.getPhase().getMatches().stream()
+                .filter(Match::isMatchFinished)
+                .count();
 
-        return (double) phaseUserStats.getPoints() / maxPoints;
+        int maxPoints = (int) finishedMatchesCount * multiplier;
+
+        if (maxPoints == 0) {
+            return 0;
+        }
+
+        return (int) Math.round((double) phaseUserStats.getPoints() / maxPoints * 100);
     }
 
     private void updateRanking(Phase phase) {
         List<PhaseUserStats> statsList = phaseUserStatsRepository.findByPhase(phase);
 
-        statsList.sort(Comparator.comparingInt(PhaseUserStats::getPoints).reversed());
+        statsList.sort(
+                Comparator
+                        .comparingInt(PhaseUserStats::getPoints).reversed()
+                .thenComparing(Comparator.comparingInt(PhaseUserStats::getBetsWithMaxScore).reversed())
+        );
+
+        for (PhaseUserStats stats : statsList) {
+            System.out.println(stats.getUser().getName() + ", points: " + stats.getPoints());
+            System.out.println(stats.getUser().getName() + ", betsWithMaxScore: " + stats.getBetsWithMaxScore());
+        }
+
+        int currentPosition = 1;
+        int skipCount = 1;
+
         for (int i = 0; i < statsList.size(); i++) {
-            PhaseUserStats phaseUserStats = statsList.get(i);
-            phaseUserStats.setRankingPosition(i + 1);
-            phaseUserStatsRepository.save(phaseUserStats);
+            PhaseUserStats current = statsList.get(i);
+
+            if (i == 0) {
+                current.setRankingPosition(currentPosition);
+            } else {
+                PhaseUserStats previous = statsList.get(i - 1);
+                boolean samePoints = current.getPoints() == previous.getPoints();
+                boolean sameMaxScore = current.getBetsWithMaxScore() == previous.getBetsWithMaxScore();
+
+                if (samePoints && sameMaxScore) {
+                    current.setRankingPosition(previous.getRankingPosition());
+                    skipCount++;
+                } else {
+                    currentPosition += skipCount;
+                    current.setRankingPosition(currentPosition);
+                    skipCount = 1;
+                }
+            }
+
+            phaseUserStatsRepository.save(current);
         }
     }
 

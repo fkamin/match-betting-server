@@ -24,7 +24,7 @@ public class TeamController {
     }
 
     @PostMapping
-    public GroupSimplifiedResponse createGroup(CreateGroupRequest createGroupRequest) {
+    public GroupSimplifiedResponse createGroup(@RequestBody CreateGroupRequest createGroupRequest) {
         return teamFacade.createGroup(createGroupRequest);
     }
 
@@ -39,7 +39,7 @@ public class TeamController {
     }
 
     @PutMapping("/{groupId}")
-    public GroupDetailedResponse updateGroupName(UpdateGroupNameRequest updateGroupNameRequest, @PathVariable Long groupId) {
+    public GroupDetailedResponse updateGroupName(@RequestBody UpdateGroupNameRequest updateGroupNameRequest, @PathVariable Long groupId) {
         return teamFacade.updateGroupName(updateGroupNameRequest, groupId);
     }
 
@@ -49,7 +49,7 @@ public class TeamController {
     }
 
     @PostMapping("/{groupId}/teams")
-    public TeamDetailedResponse createTeam(CreateTeamRequest createTeamRequest, @PathVariable Long groupId) {
+    public TeamDetailedResponse createTeam(@RequestBody CreateTeamRequest createTeamRequest, @PathVariable Long groupId) {
         return teamFacade.createTeam(createTeamRequest, groupId);
     }
 
@@ -64,7 +64,7 @@ public class TeamController {
     }
 
     @PutMapping("/{groupId}/teams/{teamId}")
-    public TeamDetailedResponse updateTeam(UpdateTeamRequest updateTeamRequest, @PathVariable Long groupId, @PathVariable Long teamId) {
+    public TeamDetailedResponse updateTeam(@RequestBody UpdateTeamRequest updateTeamRequest, @PathVariable Long groupId, @PathVariable Long teamId) {
         return teamFacade.updateTeam(updateTeamRequest, groupId, teamId);
     }
 

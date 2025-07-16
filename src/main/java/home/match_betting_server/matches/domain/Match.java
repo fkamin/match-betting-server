@@ -54,7 +54,7 @@ public class Match {
     }
 
     public MatchDetailedResponse toDetailedResponse() {
-        return new MatchDetailedResponse(id, phase.getId(), teamLeft.getName(), teamRight.getName(), teamLeftScore, teamRightScore, matchWinner.getName(), matchDate, matchStatus);
+        return new MatchDetailedResponse(id, phase.getId(), teamLeft.getName(), teamRight.getName(), teamLeftScore, teamRightScore, matchWinner != null ? matchWinner.getName() : "", matchDate, matchStatus);
     }
 
     public void finishMatch() {
