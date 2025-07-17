@@ -112,10 +112,10 @@ public class ScoringService {
                 .thenComparing(Comparator.comparingInt(PhaseUserStats::getBetsWithMaxScore).reversed())
         );
 
-        for (PhaseUserStats stats : statsList) {
-            System.out.println(stats.getUser().getName() + ", points: " + stats.getPoints());
-            System.out.println(stats.getUser().getName() + ", betsWithMaxScore: " + stats.getBetsWithMaxScore());
-        }
+//        for (PhaseUserStats stats : statsList) {
+//            System.out.println(stats.getUser().getName() + ", points: " + stats.getPoints());
+//            System.out.println(stats.getUser().getName() + ", betsWithMaxScore: " + stats.getBetsWithMaxScore());
+//        }
 
         int currentPosition = 1;
         int skipCount = 1;

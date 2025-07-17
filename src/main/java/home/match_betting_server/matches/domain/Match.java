@@ -18,28 +18,39 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "matches")
 public class Match {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "phase_id", nullable = false)
     @JsonBackReference
     private Phase phase;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "team_left", nullable = false)
     private Team teamLeft;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "team_right", nullable = false)
     private Team teamRight;
 
+    @Column(name = "team_left_score")
     private Integer teamLeftScore;
+
+    @Column(name = "team_right_score")
     private Integer teamRightScore;
 
     @ManyToOne
+    @JoinColumn(name = "match_winner_id")
     private Team matchWinner;
 
+    @Column(name = "match_date", nullable = false)
     private LocalDateTime matchDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "match_status", nullable = false)
     private MatchStatus matchStatus = MatchStatus.SCHEDULED;
 
     public Match(Phase phase, Team teamLeft, Team teamRight, LocalDateTime matchDate) {
@@ -49,13 +60,40 @@ public class Match {
         this.matchDate = matchDate;
     }
 
+    public Match(Phase phase, Team teamLeft, Team teamRight, LocalDateTime matchDate, MatchStatus status) {
+        this.phase = phase;
+        this.teamLeft = teamLeft;
+        this.teamRight = teamRight;
+        this.matchDate = matchDate;
+        this.matchStatus = status;
+    }
+
+    // --- Metody DTO ---
+
     public MatchSimplifiedResponse toSimplifiedResponse() {
-        return new MatchSimplifiedResponse(id, phase.getId(), teamLeft.getName(), teamRight.getName());
+        return new MatchSimplifiedResponse(
+                id,
+                phase.getId(),
+                teamLeft.getName(),
+                teamRight.getName()
+        );
     }
 
     public MatchDetailedResponse toDetailedResponse() {
-        return new MatchDetailedResponse(id, phase.getId(), teamLeft.getName(), teamRight.getName(), teamLeftScore, teamRightScore, matchWinner != null ? matchWinner.getName() : "", matchDate, matchStatus);
+        return new MatchDetailedResponse(
+                id,
+                phase.getId(),
+                teamLeft.getName(),
+                teamRight.getName(),
+                teamLeftScore,
+                teamRightScore,
+                matchWinner != null ? matchWinner.getName() : "",
+                matchDate,
+                matchStatus
+        );
     }
+
+    // --- Logika biznesowa ---
 
     public void finishMatch() {
         this.matchStatus = MatchStatus.FINISHED;
@@ -65,23 +103,6 @@ public class Match {
         return this.teamLeft.equals(team) || this.teamRight.equals(team);
     }
 
-    // --- Pomocnicze metody biznesowe ---
-
-//    public boolean isGroupStage() {
-//        return phase.getPhaseType() == PhaseType.GROUP_STAGE;
-//    }
-//
-//    public boolean isKnockoutStage() {
-//        return phase.getPhaseType() == PhaseType.KNOCKOUT_STAGE;
-//    }
-//
-//    public boolean isDrawIn90Minutes() {
-//        return teamLeftScore != null && teamRightScore != null && teamLeftScore.equals(teamRightScore);
-//    }
-//
-//    public boolean hasWinnerDeclared() {
-//        return matchWinner != null;
-//    }
     public boolean isMatchFinished() {
         return matchStatus == MatchStatus.FINISHED;
     }

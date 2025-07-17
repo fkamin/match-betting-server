@@ -64,4 +64,8 @@ public class Phase {
         return this.phaseStatus == PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION;
     }
 
+    public boolean isPhaseInGameplayStatus() {
+        return this.phaseStatus == PhaseStatus.GAMEPLAY;
+    }
+
 }

@@ -28,18 +28,14 @@ public class PhaseUserStats {
     @JsonBackReference
     private Phase phase;
 
-    private int points;
-    private int betsWithMaxScore;
-    private int percentageOfCorrectGuesses;
-    private int rankingPosition;
+    private int points = 0;
+    private int betsWithMaxScore = 0;
+    private int percentageOfCorrectGuesses = 0;
+    private int rankingPosition = 0;
 
     public PhaseUserStats(User user, Phase phase) {
         this.user = user;
         this.phase = phase;
-        this.points = 0;
-        this.betsWithMaxScore = 0;
-        this.percentageOfCorrectGuesses = 0;
-        this.rankingPosition = 0;
     }
 
     public PhaseUserStatsSimplifiedResponse toSimplifiedResponse() {

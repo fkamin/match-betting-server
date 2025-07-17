@@ -1,6 +1,7 @@
 package home.match_betting_server.phase_user_stats.domain;
 
 import home.match_betting_server.phase_user_stats.dto.exceptions.NotAllowedOperationException;
+import home.match_betting_server.phase_user_stats.dto.exceptions.PhaseUserStatsDoesNotExistsException;
 import home.match_betting_server.phase_user_stats.dto.exceptions.UserAlreadyJoinThatPhaseException;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsDetailedResponse;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSimplifiedResponse;
@@ -39,7 +40,7 @@ public class PhaseUserStatsFacade {
         User user = findUserById(userId);
         Phase phase = findPhaseById(phaseId);
 
-        PhaseUserStats phaseUserStats = phaseUserStatsRepository.findByPhaseAndUser(phase, user).orElseThrow(PhaseNotFoundException::new);
+        PhaseUserStats phaseUserStats = phaseUserStatsRepository.findByPhaseAndUser(phase, user).orElseThrow(PhaseUserStatsDoesNotExistsException::new);
 
         return phaseUserStats.toDetailedResponse();
     }

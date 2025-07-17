@@ -39,6 +39,7 @@ public class Bet {
 
     private Integer pointsForBet = null;
 
+    @Column(name = "max_points_in_90_minutes")
     private boolean maxPointsIn90Minutes = false;
 
     public Bet(User user, Match match, Integer betLeftScore, Integer betRightScore) {

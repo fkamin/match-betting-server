@@ -91,7 +91,8 @@ public class MatchFacade {
     }
 
     public MatchDetailedResponse finishMatch(Long phaseId, Long matchId, FinishMatchRequest finishMatchRequest) {
-        findPhaseById(phaseId);
+        Phase phase = findPhaseById(phaseId);
+        isPhaseInGameplayStatus(phase);
         //TODO(OBSLUGA EVENTU - W PRZYSZLOSCI?)
         Match matchToFinish = findMatchById(matchId);
 
@@ -125,7 +126,9 @@ public class MatchFacade {
         return ResponseEntity.noContent().build();
     }
 
-
+    private void isPhaseInGameplayStatus(Phase phase) {
+        if (!phase.isPhaseInGameplayStatus()) throw new InvalidPhaseStatusException();
+    }
 
     private Match findMatchById(Long id) {
         return matchRepository.findById(id).orElseThrow(MatchDoesNotExistsException::new);
