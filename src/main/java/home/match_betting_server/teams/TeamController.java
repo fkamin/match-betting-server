@@ -9,6 +9,8 @@ import home.match_betting_server.teams.dto.responses.GroupDetailedResponse;
 import home.match_betting_server.teams.dto.responses.GroupSimplifiedResponse;
 import home.match_betting_server.teams.dto.responses.TeamDetailedResponse;
 import home.match_betting_server.teams.dto.responses.TeamSimplifiedResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +18,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1_1/groups")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TeamController {
     private final TeamFacade teamFacade;
-
-    public TeamController(TeamFacade teamFacade) {
-        this.teamFacade = teamFacade;
-    }
 
     @PostMapping
     public GroupSimplifiedResponse createGroup(@RequestBody CreateGroupRequest createGroupRequest) {

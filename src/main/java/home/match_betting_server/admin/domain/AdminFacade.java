@@ -37,14 +37,6 @@ public class AdminFacade {
         return originalUser.toNewAccountResponse(userForDatabase.getId());
     }
 
-    public UserDetailedResponse getUserDetailed(Long userId) {
-        return findUserById(userId).toDetailedResponse();
-    }
-
-    public List<UserSimplifiedResponse> getAllUsers() {
-        return userRepository.findAll().stream().map(User::toSimplifiedResponse).toList();
-    }
-
     public ResponseEntity<String> deleteUserById(Long userId) {
         User userToDelete = findUserById(userId);
         userRepository.delete(userToDelete);

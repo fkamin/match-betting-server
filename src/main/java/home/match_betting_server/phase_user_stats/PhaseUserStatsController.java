@@ -3,16 +3,15 @@ package home.match_betting_server.phase_user_stats;
 import home.match_betting_server.phase_user_stats.domain.PhaseUserStatsFacade;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsDetailedResponse;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSimplifiedResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1_1/users")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PhaseUserStatsController {
     private final PhaseUserStatsFacade phaseUserStatsFacade;
-
-    public PhaseUserStatsController(PhaseUserStatsFacade phaseUserStatsFacade) {
-        this.phaseUserStatsFacade = phaseUserStatsFacade;
-    }
 
     @PostMapping("/{userId}/phases/{phaseId}/join-user")
     public PhaseUserStatsSimplifiedResponse joinUserToPhase(@PathVariable Long userId, @PathVariable Long phaseId) {

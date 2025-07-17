@@ -6,6 +6,8 @@ import home.match_betting_server.matches.dto.requests.FinishMatchRequest;
 import home.match_betting_server.matches.dto.requests.UpdateMatchRequest;
 import home.match_betting_server.matches.dto.responses.MatchDetailedResponse;
 import home.match_betting_server.matches.dto.responses.MatchSimplifiedResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +15,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1_1/phases")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MatchController {
     private final MatchFacade matchFacade;
-
-    public MatchController(MatchFacade matchFacade) {
-        this.matchFacade = matchFacade;
-    }
 
     @PostMapping("/{phaseId}/matches")
     public MatchSimplifiedResponse createMatch(@PathVariable Long phaseId, @RequestBody CreateMatchRequest createMatchRequest) {

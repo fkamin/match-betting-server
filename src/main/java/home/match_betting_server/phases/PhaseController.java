@@ -6,6 +6,8 @@ import home.match_betting_server.phases.dto.requests.CreatePhaseRequest;
 import home.match_betting_server.phases.dto.requests.UpdatePhaseNameRequest;
 import home.match_betting_server.phases.dto.responses.PhaseDetailedResponse;
 import home.match_betting_server.phases.dto.responses.PhaseSimplifiedResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +15,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1_1/phases")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PhaseController {
     private final PhaseFacade phaseFacade;
-
-    public PhaseController(PhaseFacade phaseFacade) {
-        this.phaseFacade = phaseFacade;
-    }
 
     @PostMapping
     public PhaseSimplifiedResponse addPhase(@RequestBody CreatePhaseRequest createPhaseRequest) {
