@@ -16,7 +16,7 @@ import home.match_betting_server.phase_user_stats.dto.exceptions.UserDoesNotJoin
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.phases.domain.PhaseRepository;
 import home.match_betting_server.phases.domain.PhaseStatus;
-import home.match_betting_server.phases.dto.exceptions.PhaseNotFoundException;
+import home.match_betting_server.phases.dto.exceptions.PhaseDoesNotExistsException;
 import home.match_betting_server.teams.domain.Team;
 import home.match_betting_server.teams.domain.TeamRepository;
 import home.match_betting_server.teams.dto.exceptions.TeamDoesNotExistsException;
@@ -112,7 +112,7 @@ public class BetFacade {
     }
 
     private Phase findPhaseById(Long phaseId) {
-        return phaseRepository.findById(phaseId).orElseThrow(PhaseNotFoundException::new);
+        return phaseRepository.findById(phaseId).orElseThrow(PhaseDoesNotExistsException::new);
     }
 
     private Bet findBetById(Long betId) {

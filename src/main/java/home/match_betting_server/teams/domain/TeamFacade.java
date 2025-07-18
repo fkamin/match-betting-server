@@ -9,7 +9,6 @@ import home.match_betting_server.teams.dto.responses.GroupDetailedResponse;
 import home.match_betting_server.teams.dto.responses.GroupSimplifiedResponse;
 import home.match_betting_server.teams.dto.responses.TeamDetailedResponse;
 import home.match_betting_server.teams.dto.responses.TeamSimplifiedResponse;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -47,9 +46,8 @@ public class TeamFacade {
         return groupRepository.save(groupToUpdate).toSimplifiedResponse();
     }
 
-    public ResponseEntity<String> deleteGroup(Long groupId) {
+    public void deleteGroup(Long groupId) {
         groupRepository.delete(findGroupById(groupId));
-        return ResponseEntity.noContent().build();
     }
 
     public TeamDetailedResponse createTeam(Long groupId, CreateTeamRequest createTeamRequest) {
@@ -85,10 +83,9 @@ public class TeamFacade {
         return teamRepository.save(team).toDetailedResponse();
     }
 
-    public ResponseEntity<String> deleteTeam(Long groupId, Long teamId) {
+    public void deleteTeam(Long groupId, Long teamId) {
         findGroupById(groupId);
         teamRepository.delete(findTeamById(teamId));
-        return ResponseEntity.noContent().build();
     }
 
     private void validateGroupCreationOrUpdateConditions(String groupName) {

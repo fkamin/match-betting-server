@@ -8,7 +8,7 @@ import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSi
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.phases.domain.PhaseRepository;
 import home.match_betting_server.phases.domain.PhaseStatus;
-import home.match_betting_server.phases.dto.exceptions.PhaseNotFoundException;
+import home.match_betting_server.phases.dto.exceptions.PhaseDoesNotExistsException;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
 import home.match_betting_server.users.dto.exceptions.UserDoesNotExistsException;
@@ -61,7 +61,7 @@ public class PhaseUserStatsFacade {
     }
 
     private Phase findPhaseById(Long phaseId) {
-        return phaseRepository.findById(phaseId).orElseThrow(PhaseNotFoundException::new);
+        return phaseRepository.findById(phaseId).orElseThrow(PhaseDoesNotExistsException::new);
     }
 
     private boolean isUserAlreadyInPhase(Phase phase, User user) {

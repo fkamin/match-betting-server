@@ -1,7 +1,6 @@
 package home.match_betting_server.phases;
 
 import home.match_betting_server.phases.domain.PhaseFacade;
-import home.match_betting_server.phases.domain.PhaseStatus;
 import home.match_betting_server.phases.dto.requests.CreatePhaseRequest;
 import home.match_betting_server.phases.dto.requests.UpdatePhaseNameRequest;
 import home.match_betting_server.phases.dto.responses.PhaseDetailedResponse;
@@ -20,13 +19,8 @@ public class PhaseController {
     private final PhaseFacade phaseFacade;
 
     @PostMapping
-    public PhaseSimplifiedResponse addPhase(@RequestBody CreatePhaseRequest createPhaseRequest) {
-        return phaseFacade.addPhase(createPhaseRequest);
-    }
-
-    @GetMapping("/{phaseId}")
-    public PhaseDetailedResponse getPhase(@PathVariable Long phaseId) {
-        return phaseFacade.getPhase(phaseId);
+    public PhaseSimplifiedResponse createPhase(@RequestBody CreatePhaseRequest createPhaseRequest) {
+        return phaseFacade.createPhase(createPhaseRequest);
     }
 
     @GetMapping
@@ -34,28 +28,38 @@ public class PhaseController {
         return phaseFacade.getAllPhases();
     }
 
+    @GetMapping("/{phaseId}")
+    public PhaseDetailedResponse getPhaseDetails(@PathVariable Long phaseId) {
+        return phaseFacade.getPhaseDetails(phaseId);
+    }
+
     @PutMapping("/{phaseId}/change-name")
-    public PhaseSimplifiedResponse updatePhase(@PathVariable Long phaseId, @RequestBody UpdatePhaseNameRequest updatePhaseNameRequest) {
-        return phaseFacade.updatePhase(phaseId, updatePhaseNameRequest);
-    }
-
-    @PutMapping("/{phaseId}/status/matches-and-accounts")
-    public PhaseDetailedResponse setPhaseStatusToMatchesAndAccounts(@PathVariable Long phaseId) {
-        return phaseFacade.updatePhaseStatus(phaseId, PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION);
-    }
-
-    @PutMapping("/{phaseId}/status/user-bets")
-    public PhaseDetailedResponse setPhaseStatusToUserBets(@PathVariable Long phaseId) {
-        return phaseFacade.updatePhaseStatus(phaseId, PhaseStatus.USER_BETS_CREATION);
-    }
-
-    @PutMapping("/{phaseId}/status/gameplay")
-    public PhaseDetailedResponse setPhaseStatusToGameplay(@PathVariable Long phaseId) {
-        return phaseFacade.updatePhaseStatus(phaseId, PhaseStatus.GAMEPLAY);
+    public PhaseSimplifiedResponse updatePhaseName(@PathVariable Long phaseId, @RequestBody UpdatePhaseNameRequest updatePhaseNameRequest) {
+        return phaseFacade.updatePhaseName(phaseId, updatePhaseNameRequest);
     }
 
     @DeleteMapping("/{phaseId}")
     public ResponseEntity<String> deletePhase(@PathVariable Long phaseId) {
-        return phaseFacade.deletePhase(phaseId);
+        phaseFacade.deletePhase(phaseId);
+        return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{phaseId}/status/matches-and-accounts")
+    public ResponseEntity<String> setPhaseStatusToMatchesAndAccounts(@PathVariable Long phaseId) {
+        phaseFacade.matchesAndAccounts(phaseId);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PatchMapping("/{phaseId}/status/user-bets")
+    public ResponseEntity<String> setPhaseStatusToUserBets(@PathVariable Long phaseId) {
+        phaseFacade.userBets(phaseId);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PatchMapping("/{phaseId}/status/gameplay")
+    public ResponseEntity<String> setPhaseStatusToGameplay(@PathVariable Long phaseId) {
+        phaseFacade.gameplay(phaseId);
+        return ResponseEntity.accepted().build();
+    }
+
 }

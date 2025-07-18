@@ -44,7 +44,8 @@ public class TeamController {
 
     @DeleteMapping("/{groupId}")
     public ResponseEntity<String> deleteGroup(@PathVariable Long groupId) {
-        return teamFacade.deleteGroup(groupId);
+        teamFacade.deleteGroup(groupId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{groupId}/teams")
@@ -69,6 +70,7 @@ public class TeamController {
 
     @DeleteMapping("/{groupId}/teams/{teamId}")
     public ResponseEntity<String> deleteTeam(@PathVariable Long groupId, @PathVariable Long teamId) {
-        return teamFacade.deleteTeam(groupId, teamId);
+        teamFacade.deleteTeam(groupId, teamId);
+        return ResponseEntity.noContent().build();
     }
 }

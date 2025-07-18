@@ -9,7 +9,7 @@ import home.match_betting_server.matches.dto.responses.MatchSimplifiedResponse;
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.phases.domain.PhaseRepository;
 import home.match_betting_server.phases.dto.exceptions.InvalidPhaseStatusException;
-import home.match_betting_server.phases.dto.exceptions.PhaseNotFoundException;
+import home.match_betting_server.phases.dto.exceptions.PhaseDoesNotExistsException;
 import home.match_betting_server.teams.domain.Group;
 import home.match_betting_server.teams.domain.Team;
 import home.match_betting_server.teams.domain.TeamRepository;
@@ -135,7 +135,7 @@ public class MatchFacade {
     }
 
     private Phase findPhaseById(Long id) {
-        return phaseRepository.findById(id).orElseThrow(PhaseNotFoundException::new);
+        return phaseRepository.findById(id).orElseThrow(PhaseDoesNotExistsException::new);
     }
 
     private Team findTeamById(Long id) {
