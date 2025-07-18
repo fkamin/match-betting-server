@@ -4,7 +4,6 @@ import home.match_betting_server.phase_user_stats.dto.exceptions.NotAllowedOpera
 import home.match_betting_server.phase_user_stats.dto.exceptions.PhaseUserStatsDoesNotExistsException;
 import home.match_betting_server.phase_user_stats.dto.exceptions.UserAlreadyJoinThatPhaseException;
 import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsDetailedResponse;
-import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSimplifiedResponse;
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.phases.domain.PhaseRepository;
 import home.match_betting_server.phases.domain.PhaseStatus;
@@ -24,37 +23,31 @@ public class PhaseUserStatsFacade {
         this.phaseUserStatsRepository = phaseUserStatsRepository;
     }
 
-    public PhaseUserStatsSimplifiedResponse joinUserToPhase(Long userId, Long phaseId) {
+    public void joinUserToPhase(Long userId, Long phaseId) {
         User user = findUserById(userId);
         Phase phase = findPhaseById(phaseId);
 
-        if (phase.getPhaseStatus() != PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION) throw new NotAllowedOperationException();
-        if (isUserAlreadyInPhase(phase, user)) throw new UserAlreadyJoinThatPhaseException();
+        validatePhaseJoinabilityForUser(user, phase);
 
-        PhaseUserStats stats = new PhaseUserStats(user, phase);
+        PhaseUserStats newPhaseUserStats = new PhaseUserStats(user, phase);
 
-        return phaseUserStatsRepository.save(stats).toSimplifiedResponse();
+        phaseUserStatsRepository.save(newPhaseUserStats).toSimplifiedResponse();
     }
 
     public PhaseUserStatsDetailedResponse getUserStats(Long userId, Long phaseId) {
         User user = findUserById(userId);
         Phase phase = findPhaseById(phaseId);
 
-        PhaseUserStats phaseUserStats = phaseUserStatsRepository.findByPhaseAndUser(phase, user).orElseThrow(PhaseUserStatsDoesNotExistsException::new);
-
-        return phaseUserStats.toDetailedResponse();
+        return findByUserAndPhase(user, phase).toDetailedResponse();
     }
 
-    //TODO(IN THE FUTURE)
-//    public PhaseUserStatsSimplifiedResponse removeUserFromPhase(Long phaseId, Long userId) {
-//        Phase phase = findPhaseById(phaseId);
-//        if (phase.getPhaseStatus() != PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION) throw new NotAllowedOperationException();
-//
-//        User user = findUserById(userId);
-//        if (isUserAlreadyInPhase(phase, user)) {
-//
-//        } else throw new UserDoesNotJoinedThatPhaseException();
-//    }
+    public void removeUserFromPhase(Long userId, Long phaseId) {
+        PhaseUserStats phaseUserStats = findByUserAndPhase(findUserById(userId), findPhaseById(phaseId));
+
+        validatePhaseRemovabilityForUser(phaseUserStats.getUser(), phaseUserStats.getPhase());
+
+        phaseUserStatsRepository.delete(phaseUserStats);
+    }
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserDoesNotExistsException::new);
@@ -64,7 +57,25 @@ public class PhaseUserStatsFacade {
         return phaseRepository.findById(phaseId).orElseThrow(PhaseDoesNotExistsException::new);
     }
 
-    private boolean isUserAlreadyInPhase(Phase phase, User user) {
-        return phaseUserStatsRepository.existsByPhaseAndUser(phase, user);
+    private void validatePhaseJoinabilityForUser(User user, Phase phase) {
+        validatePhaseStatus(phase.getPhaseStatus());
+        validateUserExistenceInPhase(user, phase);
+    }
+
+    private void validatePhaseStatus(PhaseStatus phaseStatus) {
+        if (phaseStatus != PhaseStatus.MATCHES_AND_ACCOUNTS_CREATION) throw new NotAllowedOperationException();
+    }
+
+    private void validateUserExistenceInPhase(User user, Phase phase) {
+        if (phaseUserStatsRepository.existsByUserAndPhase(user, phase)) throw new UserAlreadyJoinThatPhaseException();
+    }
+
+    private PhaseUserStats findByUserAndPhase(User user, Phase phase) {
+        return phaseUserStatsRepository.findByUserAndPhase(user, phase).orElseThrow(PhaseUserStatsDoesNotExistsException::new);
+    }
+
+    private void validatePhaseRemovabilityForUser(User user, Phase phase) {
+        validatePhaseStatus(phase.getPhaseStatus());
+        if (phaseUserStatsRepository.existsByUserAndPhase(user, phase)) throw new UserAlreadyJoinThatPhaseException();
     }
 }

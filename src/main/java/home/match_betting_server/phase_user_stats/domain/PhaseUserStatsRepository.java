@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PhaseUserStatsRepository extends JpaRepository<PhaseUserStats, Long> {
-    boolean existsByPhaseAndUser(Phase phase, User user);
-    Optional<PhaseUserStats> findByPhaseAndUser(Phase phase, User user);
+    boolean existsByUserAndPhase(User user, Phase phase);
+    Optional<PhaseUserStats> findByUserAndPhase(User user, Phase phase);
     List<PhaseUserStats> findByPhase(Phase phase);
 }
