@@ -11,7 +11,7 @@ import home.match_betting_server.phases.domain.PhaseStatus;
 import home.match_betting_server.phases.dto.exceptions.PhaseNotFoundException;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
-import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
+import home.match_betting_server.users.dto.exceptions.UserDoesNotExistsException;
 
 public class PhaseUserStatsFacade {
     private final UserRepository userRepository;
@@ -57,7 +57,7 @@ public class PhaseUserStatsFacade {
 //    }
 
     private User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return userRepository.findById(userId).orElseThrow(UserDoesNotExistsException::new);
     }
 
     private Phase findPhaseById(Long phaseId) {

@@ -22,7 +22,7 @@ import home.match_betting_server.teams.domain.TeamRepository;
 import home.match_betting_server.teams.dto.exceptions.TeamDoesNotExistsException;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
-import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
+import home.match_betting_server.users.dto.exceptions.UserDoesNotExistsException;
 
 import java.util.List;
 
@@ -104,7 +104,7 @@ public class BetFacade {
 
 
     private User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return userRepository.findById(userId).orElseThrow(UserDoesNotExistsException::new);
     }
 
     private Match findMatchById(Long matchId) {

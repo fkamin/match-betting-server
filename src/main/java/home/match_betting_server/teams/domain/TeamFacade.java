@@ -23,50 +23,40 @@ public class TeamFacade {
     }
 
     public GroupSimplifiedResponse createGroup(CreateGroupRequest createGroupRequest) {
-        validateGroupCreationConditions(createGroupRequest);
+        validateGroupCreationOrUpdateConditions(createGroupRequest.getName());
 
-        return groupRepository.save(new Group(createGroupRequest.getName())).toSimplifiedResponse();
-    }
+        Group newGroup = new Group(createGroupRequest.getName());
 
-    private void validateGroupCreationConditions(CreateGroupRequest createGroupRequest) {
-        isNewGroupNameNullOrEmpty(createGroupRequest.getName());
-        doesGroupAlreadyExists(createGroupRequest.getName());
-    }
-
-    private void isNewGroupNameNullOrEmpty(String name) {
-        if (name == null || name.isEmpty()) throw new InvalidGroupNameException();
-    }
-
-    private void doesGroupAlreadyExists(String name) {
-        if (groupRepository.existsByName(name)) throw new GroupWithThatNameAlreadyExistsException();
+        return groupRepository.save(newGroup).toSimplifiedResponse();
     }
 
     public List<GroupSimplifiedResponse> getAllGroups() {
         return groupRepository.findAll().stream().map(Group::toSimplifiedResponse).toList();
     }
 
-    public GroupDetailedResponse getGroup(Long groupId) {
+    public GroupDetailedResponse getGroupDetails(Long groupId) {
         return findGroupById(groupId).toDetailedResponse();
     }
 
-    public GroupDetailedResponse updateGroupName(UpdateGroupNameRequest updateGroupNameRequest, Long groupId) {
-        Group group = findGroupById(groupId);
-        group.setName(updateGroupNameRequest.getName());
-        return groupRepository.save(group).toDetailedResponse();
+    public GroupSimplifiedResponse updateGroupName(Long groupId, UpdateGroupNameRequest updateGroupNameRequest) {
+        Group groupToUpdate = findGroupById(groupId);
+
+        validateGroupCreationOrUpdateConditions(updateGroupNameRequest.getName());
+        groupToUpdate.setName(updateGroupNameRequest.getName());
+
+        return groupRepository.save(groupToUpdate).toSimplifiedResponse();
     }
 
     public ResponseEntity<String> deleteGroup(Long groupId) {
-        Group group = findGroupById(groupId);
-        groupRepository.delete(group);
-        return ResponseEntity.ok("Deleted group with id " + groupId);
+        groupRepository.delete(findGroupById(groupId));
+        return ResponseEntity.noContent().build();
     }
 
-    public TeamDetailedResponse createTeam(CreateTeamRequest createTeamRequest, Long groupId) {
-        validateTeamCreationConditions(createTeamRequest.getName());
-
+    public TeamDetailedResponse createTeam(Long groupId, CreateTeamRequest createTeamRequest) {
         Group group = findGroupById(groupId);
-        Team newTeam = new Team(createTeamRequest.getName(), group);
 
+        validateTeamNameConditions(createTeamRequest.getName());
+        Team newTeam = new Team(createTeamRequest.getName(), group);
         group.getTeams().add(newTeam);
 
         return teamRepository.save(newTeam).toDetailedResponse();
@@ -78,12 +68,12 @@ public class TeamFacade {
         return group.getTeams().stream().map(Team::toSimplifiedResponse).toList();
     }
 
-    public TeamDetailedResponse getTeam(Long groupId, Long teamId) {
+    public TeamDetailedResponse getTeamDetails(Long groupId, Long teamId) {
         findGroupById(groupId);
         return findTeamById(teamId).toDetailedResponse();
     }
 
-    public TeamDetailedResponse updateTeam(UpdateTeamRequest updateTeamRequest, Long groupId, Long teamId) {
+    public TeamDetailedResponse updateTeam(Long groupId, Long teamId, UpdateTeamRequest updateTeamRequest) {
         Group newGroup = findGroupById(groupId);
         Team team = findTeamById(teamId);
 
@@ -101,24 +91,37 @@ public class TeamFacade {
         return ResponseEntity.noContent().build();
     }
 
+    private void validateGroupCreationOrUpdateConditions(String groupName) {
+        validateGroupName(groupName);
+        validateGroupExistence(groupName);
+    }
+
+    private void validateGroupName(String name) {
+        if (name == null || name.isEmpty()) throw new GroupNameCanNotBeNullOrEmptyException();
+    }
+
+    private void validateGroupExistence(String name) {
+        if (groupRepository.existsByName(name)) throw new GroupWithThatNameAlreadyExistsException();
+    }
+
     private Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(GroupDoesNotExistsException::new);
     }
 
-    private Team findTeamById(Long teamId) {
-        return teamRepository.findById(teamId).orElseThrow(TeamDoesNotExistsException::new);
-    }
-
-    private void validateTeamCreationConditions(String name) {
-        doesTeamAlreadyExists(name);
+    private void validateTeamNameConditions(String name) {
         validateTeamName(name);
-    }
-
-    private void doesTeamAlreadyExists(String name) {
-        if (teamRepository.existsByName(name)) throw new TeamWithThatNameAlreadyExistsException();
+        validateTeamExistence(name);
     }
 
     private void validateTeamName(String name) {
-        if (teamRepository.existsByName(name) && name != null) throw new InvalidTeamNameException();
+        if (teamRepository.existsByName(name) && name != null) throw new TeamNameCanNotBeNullOrEmptyException();
+    }
+
+    private void validateTeamExistence(String name) {
+        if (teamRepository.existsByName(name)) throw new TeamWithThatNameAlreadyExistsException();
+    }
+
+    private Team findTeamById(Long teamId) {
+        return teamRepository.findById(teamId).orElseThrow(TeamDoesNotExistsException::new);
     }
 }

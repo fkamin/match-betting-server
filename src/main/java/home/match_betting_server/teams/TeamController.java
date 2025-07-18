@@ -33,13 +33,13 @@ public class TeamController {
     }
 
     @GetMapping("/{groupId}")
-    public GroupDetailedResponse getGroupById(@PathVariable Long groupId) {
-        return teamFacade.getGroup(groupId);
+    public GroupDetailedResponse getGroupDetails(@PathVariable Long groupId) {
+        return teamFacade.getGroupDetails(groupId);
     }
 
     @PutMapping("/{groupId}")
-    public GroupDetailedResponse updateGroupName(@RequestBody UpdateGroupNameRequest updateGroupNameRequest, @PathVariable Long groupId) {
-        return teamFacade.updateGroupName(updateGroupNameRequest, groupId);
+    public GroupSimplifiedResponse updateGroupName(@PathVariable Long groupId, @RequestBody UpdateGroupNameRequest updateGroupNameRequest) {
+        return teamFacade.updateGroupName(groupId, updateGroupNameRequest);
     }
 
     @DeleteMapping("/{groupId}")
@@ -48,8 +48,8 @@ public class TeamController {
     }
 
     @PostMapping("/{groupId}/teams")
-    public TeamDetailedResponse createTeam(@RequestBody CreateTeamRequest createTeamRequest, @PathVariable Long groupId) {
-        return teamFacade.createTeam(createTeamRequest, groupId);
+    public TeamDetailedResponse createTeam(@PathVariable Long groupId, @RequestBody CreateTeamRequest createTeamRequest) {
+        return teamFacade.createTeam(groupId, createTeamRequest);
     }
 
     @GetMapping("/{groupId}/teams")
@@ -58,13 +58,13 @@ public class TeamController {
     }
 
     @GetMapping("/{groupId}/teams/{teamId}")
-    public TeamDetailedResponse getTeam(@PathVariable Long groupId, @PathVariable Long teamId) {
-        return teamFacade.getTeam(groupId, teamId);
+    public TeamDetailedResponse getTeamDetails(@PathVariable Long groupId, @PathVariable Long teamId) {
+        return teamFacade.getTeamDetails(groupId, teamId);
     }
 
     @PutMapping("/{groupId}/teams/{teamId}")
-    public TeamDetailedResponse updateTeam(@RequestBody UpdateTeamRequest updateTeamRequest, @PathVariable Long groupId, @PathVariable Long teamId) {
-        return teamFacade.updateTeam(updateTeamRequest, groupId, teamId);
+    public TeamDetailedResponse updateTeam(@PathVariable Long groupId, @PathVariable Long teamId, @RequestBody UpdateTeamRequest updateTeamRequest) {
+        return teamFacade.updateTeam(groupId, teamId, updateTeamRequest);
     }
 
     @DeleteMapping("/{groupId}/teams/{teamId}")

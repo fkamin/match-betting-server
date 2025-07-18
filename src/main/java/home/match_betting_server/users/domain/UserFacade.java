@@ -1,8 +1,9 @@
 package home.match_betting_server.users.domain;
 
 import home.match_betting_server.auth.domain.PasswordService;
-import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
-import home.match_betting_server.users.dto.exceptions.UserWithThatNameAlreadyExistsException;
+import home.match_betting_server.users.dto.exceptions.UserAlreadyExistsException;
+import home.match_betting_server.users.dto.exceptions.UserDoesNotExistsException;
+import home.match_betting_server.users.dto.exceptions.UserNameCanNotBeNullOrEmptyException;
 import home.match_betting_server.users.dto.requests.NewPasswordRequest;
 import home.match_betting_server.users.dto.requests.NewUserNameRequest;
 import home.match_betting_server.users.dto.responses.UserDetailedResponse;
@@ -26,17 +27,11 @@ public class UserFacade {
         return findUserById(userId).toDetailedResponse();
     }
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-    }
-
     public UserDetailedResponse changeName(Long userId, NewUserNameRequest newUserNameRequest) {
         User userToModify = findUserById(userId);
 
-        //TODO dodać walidacje
-        if (userRepository.existsByName(newUserNameRequest.name) && newUserNameRequest.name != null)
-            throw new UserWithThatNameAlreadyExistsException();
-        userToModify.setName(newUserNameRequest.name);
+        validateUserNameUpdatingConditions(newUserNameRequest.getName());
+        userToModify.setName(newUserNameRequest.getName());
 
         return userRepository.save(userToModify).toDetailedResponse();
     }
@@ -50,4 +45,23 @@ public class UserFacade {
 
         return userRepository.save(userToModify).toDetailedResponse();
     }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(UserDoesNotExistsException::new);
+    }
+
+    private void validateUserNameUpdatingConditions(String name) {
+        validateUserExistence(name);
+        validateUserName(name);
+    }
+
+    private void validateUserExistence(String name) {
+        if (userRepository.existsByName(name)) throw new UserAlreadyExistsException();
+    }
+
+    private void validateUserName(String name) {
+        if (name.isEmpty() || name == null) throw new UserNameCanNotBeNullOrEmptyException();
+    }
+
+
 }

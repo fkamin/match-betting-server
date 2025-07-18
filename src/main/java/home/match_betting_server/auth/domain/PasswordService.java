@@ -29,10 +29,10 @@ public class PasswordService {
     }
 
     public boolean validateNewPassword(NewPasswordRequest newPasswordRequest, String currentPassword) {
-        logger.info(newPasswordRequest.password);
-        logger.info(newPasswordRequest.passwordAgain);
-        logger.info(hashPassword(newPasswordRequest.password));
-        logger.info(currentPassword);
+//        logger.info(newPasswordRequest.password);
+//        logger.info(newPasswordRequest.passwordAgain);
+//        logger.info(hashPassword(newPasswordRequest.password));
+//        logger.info(currentPassword);
 
         if (checkPassword(newPasswordRequest.password, currentPassword)) throw new NewPasswordMustBeDifferentException();
         if (!Objects.equals(newPasswordRequest.password, newPasswordRequest.passwordAgain)) throw new PasswordAndPasswordAgainMustBeTheSameException();

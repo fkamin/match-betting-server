@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDetailedResponse getUser(@PathVariable Long userId) {
+    public UserDetailedResponse getUserDetails(@PathVariable Long userId) {
         return userFacade.getUserDetails(userId);
     }
 

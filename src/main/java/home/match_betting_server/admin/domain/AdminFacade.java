@@ -7,13 +7,9 @@ import home.match_betting_server.users.domain.Role;
 import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserRepository;
 import home.match_betting_server.users.dto.exceptions.UserAlreadyExistsException;
-import home.match_betting_server.users.dto.exceptions.UserNotFoundException;
-import home.match_betting_server.users.dto.responses.UserDetailedResponse;
+import home.match_betting_server.users.dto.exceptions.UserDoesNotExistsException;
 import home.match_betting_server.users.dto.responses.UserNewAccountResponse;
-import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 public class AdminFacade {
     private final UserRepository userRepository;
@@ -45,6 +41,6 @@ public class AdminFacade {
     }
 
     private User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return userRepository.findById(userId).orElseThrow(UserDoesNotExistsException::new);
     }
 }
