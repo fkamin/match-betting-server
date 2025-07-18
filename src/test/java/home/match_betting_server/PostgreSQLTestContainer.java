@@ -9,8 +9,8 @@ public class PostgreSQLTestContainer {
     private static final PostgreSQLContainer<?> container =
             new PostgreSQLContainer<>(POSTGRESQL_IMAGE_NAME)
                     .withDatabaseName("testdb")
-                    .withUsername("postgres")
-                    .withPassword("postgres");
+                    .withUsername("user")
+                    .withPassword("password");
 
     static {
         container.start();
