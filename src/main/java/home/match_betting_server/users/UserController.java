@@ -4,17 +4,19 @@ import home.match_betting_server.users.domain.UserFacade;
 import home.match_betting_server.users.dto.requests.NewPasswordRequest;
 import home.match_betting_server.users.dto.requests.NewUserNameRequest;
 import home.match_betting_server.users.dto.responses.UserDetailedResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1_1/users")
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
     private final UserFacade userFacade;
+
+    public UserController(UserFacade userFacade) {
+        this.userFacade = userFacade;
+    }
 
     @GetMapping
     public List<UserDetailedResponse> getAllUsers() {

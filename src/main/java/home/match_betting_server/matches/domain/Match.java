@@ -6,6 +6,7 @@ import home.match_betting_server.matches.dto.responses.MatchSimplifiedResponse;
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.teams.domain.Team;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "matches")
 public class Match {

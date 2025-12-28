@@ -24,14 +24,14 @@ public class MatchController {
         return matchFacade.createMatch(phaseId, createMatchRequest);
     }
 
-    @GetMapping("/{phaseId}/matches/{matchId}")
-    public MatchDetailedResponse getMatch(@PathVariable Long phaseId, @PathVariable Long matchId) {
-        return matchFacade.getMatch(phaseId, matchId);
-    }
-
     @GetMapping("/{phaseId}/matches")
     public List<MatchSimplifiedResponse> getAllMatches(@PathVariable Long phaseId) {
         return matchFacade.getAllMatches(phaseId);
+    }
+
+    @GetMapping("/{phaseId}/matches/{matchId}")
+    public MatchDetailedResponse getMatchDetails(@PathVariable Long phaseId, @PathVariable Long matchId) {
+        return matchFacade.getMatchDetails(phaseId, matchId);
     }
 
     @PutMapping("/{phaseId}/matches/{matchId}")
@@ -46,6 +46,7 @@ public class MatchController {
 
     @DeleteMapping("/{phaseId}/matches/{matchId}")
     public ResponseEntity<String> deleteMatch(@PathVariable Long phaseId, @PathVariable Long matchId) {
-        return matchFacade.deleteMatch(phaseId, matchId);
+        matchFacade.deleteMatch(phaseId, matchId);
+        return ResponseEntity.noContent().build();
     }
 }

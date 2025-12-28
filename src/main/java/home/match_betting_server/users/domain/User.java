@@ -6,6 +6,7 @@ import home.match_betting_server.users.dto.responses.UserDetailedResponse;
 import home.match_betting_server.users.dto.responses.UserNewAccountResponse;
 import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "users")
 public class User {
@@ -33,7 +35,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private List<PhaseUserStats> phaseUserStats = new ArrayList<>();
 

@@ -6,14 +6,16 @@ import home.match_betting_server.phase_user_stats.dto.responses.PhaseUserStatsSi
 import home.match_betting_server.phases.domain.Phase;
 import home.match_betting_server.users.domain.User;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Entity
 @Table(name = "phase_user_stats")
 public class PhaseUserStats {
     @Id

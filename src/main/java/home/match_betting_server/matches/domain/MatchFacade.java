@@ -14,7 +14,6 @@ import home.match_betting_server.teams.domain.Group;
 import home.match_betting_server.teams.domain.Team;
 import home.match_betting_server.teams.domain.TeamRepository;
 import home.match_betting_server.teams.dto.exceptions.TeamDoesNotExistsException;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,26 +42,14 @@ public class MatchFacade {
         return matchRepository.save(newMatch).toSimplifiedResponse();
     }
 
-    private Match validateMatchCreationConditionsAndReturn(Phase phase, Team teamLeft, Team teamRight, LocalDateTime matchDate) {
-        isPhaseInMatchesAndAccountsCreationStatus(phase);
-        areTwoTeamsDifferent(teamLeft, teamRight);
-        doesMatchAlreadyExists(teamLeft, teamRight);
-
-        if (phase.isGroupStage()) {
-            areTwoTeamsFromTheSameGroup(teamLeft.getGroup(), teamRight.getGroup());
-        }
-
-        return new Match(phase, teamLeft, teamRight, matchDate);
-    }
-
-    public MatchDetailedResponse getMatch(Long phaseId, Long matchId) {
-        findPhaseById(phaseId);
-        return findMatchById(matchId).toDetailedResponse();
-    }
-
     public List<MatchSimplifiedResponse> getAllMatches(Long phaseId) {
         Phase phase = findPhaseById(phaseId);
         return matchRepository.findAllByPhase(phase).stream().map(Match::toSimplifiedResponse).toList();
+    }
+
+    public MatchDetailedResponse getMatchDetails(Long phaseId, Long matchId) {
+        findPhaseById(phaseId);
+        return findMatchById(matchId).toDetailedResponse();
     }
 
     public MatchDetailedResponse updateMatch(Long phaseId, Long matchId, UpdateMatchRequest updateMatchRequest) {
@@ -80,20 +67,10 @@ public class MatchFacade {
         return matchRepository.save(matchToUpdate).toDetailedResponse();
     }
 
-    private void validateMatchUpdateConditions(Phase phase, Team teamLeft, Team teamRight, Match matchToUpdate) {
-        isPhaseInMatchesAndAccountsCreationStatus(phase);
-        areTwoTeamsDifferent(teamLeft, teamRight);
-        isMatchFinished(matchToUpdate);
-
-        if (phase.isGroupStage()) {
-            areTwoTeamsFromTheSameGroup(teamLeft.getGroup(), teamRight.getGroup());
-        }
-    }
-
     public MatchDetailedResponse finishMatch(Long phaseId, Long matchId, FinishMatchRequest finishMatchRequest) {
-        Phase phase = findPhaseById(phaseId);
-        isPhaseInGameplayStatus(phase);
-        //TODO(OBSLUGA EVENTU - W PRZYSZLOSCI?)
+        validatePhaseStatus(findPhaseById(phaseId));
+
+        //TODO(OBSLUGA EVENTU - W PRZYSZLOSCI)
         Match matchToFinish = findMatchById(matchId);
 
         //TODO(WALIDACJA FINISH_MATCH_REQUEST)
@@ -118,15 +95,12 @@ public class MatchFacade {
         return matchToFinish.toDetailedResponse();
     }
 
-    public ResponseEntity<String> deleteMatch(Long phaseId, Long matchId) {
+    public void deleteMatch(Long phaseId, Long matchId) {
         findPhaseById(phaseId);
-        Match matchToDelete = findMatchById(matchId);
-        matchRepository.delete(matchToDelete);
-
-        return ResponseEntity.noContent().build();
+        matchRepository.delete(findMatchById(matchId));
     }
 
-    private void isPhaseInGameplayStatus(Phase phase) {
+    private void validatePhaseStatus(Phase phase) {
         if (!phase.isPhaseInGameplayStatus()) throw new InvalidPhaseStatusException();
     }
 
@@ -162,4 +136,25 @@ public class MatchFacade {
         if (matchRepository.existsByTeamsRegardlessOfSide(teamLeft, teamRight)) throw new MatchAlreadyExistsException();
     }
 
+    private Match validateMatchCreationConditionsAndReturn(Phase phase, Team teamLeft, Team teamRight, LocalDateTime matchDate) {
+        isPhaseInMatchesAndAccountsCreationStatus(phase);
+        areTwoTeamsDifferent(teamLeft, teamRight);
+        doesMatchAlreadyExists(teamLeft, teamRight);
+
+        if (phase.isGroupStage()) {
+            areTwoTeamsFromTheSameGroup(teamLeft.getGroup(), teamRight.getGroup());
+        }
+
+        return new Match(phase, teamLeft, teamRight, matchDate);
+    }
+
+    private void validateMatchUpdateConditions(Phase phase, Team teamLeft, Team teamRight, Match matchToUpdate) {
+        isPhaseInMatchesAndAccountsCreationStatus(phase);
+        areTwoTeamsDifferent(teamLeft, teamRight);
+        isMatchFinished(matchToUpdate);
+
+        if (phase.isGroupStage()) {
+            areTwoTeamsFromTheSameGroup(teamLeft.getGroup(), teamRight.getGroup());
+        }
+    }
 }
