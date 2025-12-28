@@ -4,6 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ServiceErrorResponseCode {
+    AUTH01("Invalid login or password exception"),
+
     USER01("User with that login already exists exception"),
     USER02("User does not exists exception"),
     USER03("New password must be different then current"),

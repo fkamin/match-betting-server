@@ -44,13 +44,14 @@ CREATE TABLE matches
 
 CREATE TABLE bets
 (
-    id                      SERIAL PRIMARY KEY,
-    user_id                 INTEGER REFERENCES users (id),
-    match_id                INTEGER REFERENCES matches (id),
-    bet_left_score          INTEGER NOT NULL,
-    bet_right_score         INTEGER NOT NULL,
-    team_id                 INTEGER REFERENCES teams (id),
-    points_for_bet          INTEGER,
+    id                       SERIAL PRIMARY KEY,
+    user_id                  INTEGER REFERENCES users (id),
+    match_id                 INTEGER REFERENCES matches (id),
+    phase_id                 INTEGER REFERENCES phases (id),
+    bet_left_score           INTEGER NOT NULL,
+    bet_right_score          INTEGER NOT NULL,
+    team_id                  INTEGER REFERENCES teams (id),
+    points_for_bet           INTEGER,
     max_points_in_90_minutes BOOLEAN DEFAULT FALSE
 );
 
@@ -66,5 +67,5 @@ CREATE TABLE phase_user_stats
 );
 
 -- insert admin account
-INSERT INTO users (id, login, password, name, role)
-VALUES (1, 'admin', '$2a$10$Kw1PipVN4MbnRkG2Sc66FOSsPSsQIKcsfRSIhccFyRu6dfPFj6CGa', 'admin', 'ADMIN');
+-- INSERT INTO users (id, login, password, name, role)
+-- VALUES (1, 'admin', '$2a$10$Kw1PipVN4MbnRkG2Sc66FOSsPSsQIKcsfRSIhccFyRu6dfPFj6CGa', 'admin', 'ADMIN');

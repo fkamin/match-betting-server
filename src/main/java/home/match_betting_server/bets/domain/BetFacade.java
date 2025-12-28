@@ -145,7 +145,7 @@ public class BetFacade {
     }
 
     private void doesUserJoinedPhase(User user, Phase phase) {
-        if (!phaseUserStatsRepository.existsByPhaseAndUser(phase, user)) throw new UserDoesNotJoinedThatPhaseException();
+        if (!phaseUserStatsRepository.existsByUserAndPhase(user, phase)) throw new UserDoesNotJoinedThatPhaseException();
     }
 
     private void doesBetAlreadyExists(User user, Match match) {

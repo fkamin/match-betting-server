@@ -64,7 +64,7 @@ public class ScoringService {
     }
 
     private PhaseUserStats getPhaseUserStats(Phase phase, User user) {
-        return phaseUserStatsRepository.findByPhaseAndUser(phase, user).orElseThrow(PhaseUserStatsDoesNotExistsException::new);
+        return phaseUserStatsRepository.findByUserAndPhase(user, phase).orElseThrow(PhaseUserStatsDoesNotExistsException::new);
     }
 
     private void updatePhaseUserStats(PhaseUserStats phaseUserStats, Bet bet) {

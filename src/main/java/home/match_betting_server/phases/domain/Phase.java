@@ -6,6 +6,7 @@ import home.match_betting_server.phases.dto.responses.PhaseDetailedResponse;
 import home.match_betting_server.phases.dto.responses.PhaseSimplifiedResponse;
 import home.match_betting_server.phase_user_stats.domain.PhaseUserStats;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,11 +14,12 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "phases")
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Entity
+@Table(name = "phases")
 public class Phase {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
