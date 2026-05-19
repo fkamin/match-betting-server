@@ -1,67 +1,52 @@
 package home.match_betting_server.users.domain;
 
-import home.match_betting_server.auth.domain.PasswordService;
+import home.match_betting_server.auth.JwtService;
+import home.match_betting_server.users.dto.exceptions.InvalidCredentialsException;
 import home.match_betting_server.users.dto.exceptions.UserAlreadyExistsException;
-import home.match_betting_server.users.dto.exceptions.UserDoesNotExistsException;
-import home.match_betting_server.users.dto.exceptions.UserNameCanNotBeNullOrEmptyException;
-import home.match_betting_server.users.dto.requests.NewPasswordRequest;
-import home.match_betting_server.users.dto.requests.NewUserNameRequest;
-import home.match_betting_server.users.dto.responses.UserDetailedResponse;
+import home.match_betting_server.users.dto.requests.LoginRequest;
+import home.match_betting_server.users.dto.requests.RegisterRequest;
+import home.match_betting_server.users.dto.responses.AuthResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 public class UserFacade {
     private final UserRepository userRepository;
-    private final PasswordService passwordService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserFacade(UserRepository userRepository, PasswordService passwordService) {
+    public UserFacade(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
-        this.passwordService = passwordService;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public List<UserDetailedResponse> getAllUsers() {
-        return userRepository.findAll().stream().map(User::toDetailedResponse).toList();
-    }
-
-    public UserDetailedResponse getUserDetails(Long userId) {
-        return findUserById(userId).toDetailedResponse();
-    }
-
-    public UserDetailedResponse changeName(Long userId, NewUserNameRequest newUserNameRequest) {
-        User userToModify = findUserById(userId);
-
-        validateUserNameUpdatingConditions(newUserNameRequest.getName());
-        userToModify.setName(newUserNameRequest.getName());
-
-        return userRepository.save(userToModify).toDetailedResponse();
-    }
-
-    public UserDetailedResponse changePassword(Long userId, NewPasswordRequest newPasswordRequest) {
-        User userToModify = findUserById(userId);
-
-        if (passwordService.validateNewPassword(newPasswordRequest, userToModify.getPassword())) {
-            userToModify.setPassword(passwordService.hashPassword(newPasswordRequest.password));
+    public AuthResponse register(RegisterRequest registerRequest) {
+        if (userRepository.existsByLogin(registerRequest.login())) {
+            throw new UserAlreadyExistsException();
         }
 
-        return userRepository.save(userToModify).toDetailedResponse();
+        User user = new User();
+
+        user.setLogin(registerRequest.login());
+        user.setPassword(passwordEncoder.encode(registerRequest.password()));
+        user.setRole(UserRole.USER);
+        user.setEnabled(true);
+        user.setCreatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+
+        return new AuthResponse(jwtService.generateToken(user));
     }
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(UserDoesNotExistsException::new);
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByLogin(loginRequest.login())
+                .orElseThrow(InvalidCredentialsException::new);
+
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+
+        return new AuthResponse(jwtService.generateToken(user));
     }
-
-    private void validateUserNameUpdatingConditions(String name) {
-        validateUserExistence(name);
-        validateUserName(name);
-    }
-
-    private void validateUserExistence(String name) {
-        if (userRepository.existsByName(name)) throw new UserAlreadyExistsException();
-    }
-
-    private void validateUserName(String name) {
-        if (name.isEmpty() || name == null) throw new UserNameCanNotBeNullOrEmptyException();
-    }
-
-
 }

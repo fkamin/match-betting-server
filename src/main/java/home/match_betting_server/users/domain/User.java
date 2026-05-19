@@ -1,28 +1,16 @@
 package home.match_betting_server.users.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import home.match_betting_server.phase_user_stats.domain.PhaseUserStats;
-import home.match_betting_server.users.dto.responses.UserDetailedResponse;
-import home.match_betting_server.users.dto.responses.UserNewAccountResponse;
-import home.match_betting_server.users.dto.responses.UserSimplifiedResponse;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "users")
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String login;
@@ -33,32 +21,73 @@ public class User {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    @JsonManagedReference
-    private List<PhaseUserStats> phaseUserStats = new ArrayList<>();
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private boolean enabled;
 
-    public User(String login, String password) {
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public User(String login, String password, Role role) {
-        this.login = login;
-        this.password = password;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
-    public UserSimplifiedResponse toSimplifiedResponse() {
-        return new UserSimplifiedResponse(id, name);
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public UserDetailedResponse toDetailedResponse() {
-        return new UserDetailedResponse(id, login, name, role, phaseUserStats);
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public UserNewAccountResponse toNewAccountResponse(Long userId) {
-        return new UserNewAccountResponse(userId, name, login, password);
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

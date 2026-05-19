@@ -1,16 +1,17 @@
 package home.match_betting_server.users;
 
+import home.match_betting_server.users.domain.User;
 import home.match_betting_server.users.domain.UserFacade;
-import home.match_betting_server.users.dto.requests.NewPasswordRequest;
-import home.match_betting_server.users.dto.requests.NewUserNameRequest;
-import home.match_betting_server.users.dto.responses.UserDetailedResponse;
+import home.match_betting_server.users.dto.requests.LoginRequest;
+import home.match_betting_server.users.dto.requests.RegisterRequest;
+import home.match_betting_server.users.dto.responses.AuthResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/v1_1/users")
+@RequestMapping("/api/v1/users")
+@SecurityRequirement(name = "authorization")
 public class UserController {
     private final UserFacade userFacade;
 
@@ -18,23 +19,24 @@ public class UserController {
         this.userFacade = userFacade;
     }
 
-    @GetMapping
-    public List<UserDetailedResponse> getAllUsers() {
-        return userFacade.getAllUsers();
+    @PostMapping("/register")
+    public AuthResponse createUser(@RequestBody RegisterRequest registerRequest) {
+        return userFacade.register(registerRequest);
     }
 
-    @GetMapping("/{userId}")
-    public UserDetailedResponse getUserDetails(@PathVariable Long userId) {
-        return userFacade.getUserDetails(userId);
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody LoginRequest loginRequest) {
+        return userFacade.login(loginRequest);
     }
 
-    @PutMapping("/{userId}/change-name")
-    public UserDetailedResponse changeName(@PathVariable Long userId, @RequestBody NewUserNameRequest newUserNameRequest) {
-        return userFacade.changeName(userId, newUserNameRequest);
+    @GetMapping("/testEndpoint")
+    public String testEndpoint() {
+        return "Test Endpoint - public";
     }
 
-    @PutMapping("/{userId}/change-password")
-    public UserDetailedResponse changePassword(@PathVariable Long userId, @RequestBody NewPasswordRequest newPasswordRequest) {
-        return userFacade.changePassword(userId, newPasswordRequest);
+    @GetMapping("/me")
+    public String me(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return "Logged in user: " + user.getLogin();
     }
 }

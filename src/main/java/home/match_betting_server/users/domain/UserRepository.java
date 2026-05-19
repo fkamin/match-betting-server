@@ -1,14 +1,12 @@
 package home.match_betting_server.users.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Boolean existsByLogin(String login);
-    Boolean existsByName(String name);
-
+public interface UserRepository extends CrudRepository<User, UUID> {
     Optional<User> findByLogin(String login);
+
+    boolean existsByLogin(String login);
 }
